@@ -1,0 +1,32 @@
+server:
+  port: 8089
+
+spring:
+  datasource:
+    username: root
+    password: WOaiJU0688@
+    url: jdbc:mysql://8.131.72.239:3306/crowdos?useUnicode=true&characterEncoding=utf-8&useSSL=true&serverTimezone=Asia/Shanghai
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  servlet:
+    multipart:
+      max-file-size: 100MB
+      max-request-size: 300MB
+mybatis:
+  mapper-locations: classpath:mapping/*Mapper.xml
+  type-aliases-package: com.ShawnYin.WSP.entity
+
+#showSql
+logging:
+  level:
+    com:
+      example:
+        mapper : debug
+  file:
+    path: F:/ketiwu/visualization/log
+
+#pagehelper
+pagehelper:
+  helperDialect: mysql
+  reasonable: true
+  supportMethodsArguments: true
+  params: count=countSql

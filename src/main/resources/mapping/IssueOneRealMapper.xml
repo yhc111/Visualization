@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.ShawnYin.WSP.mapper.IssueOneRealMapper">
+    <resultMap id="BaseResultMap" type="com.ShawnYin.WSP.entity.IssueOneReal">
+<!--        MYSQL中Bigint  对应着 MyBatis中的BIGINT    java中的BigInteger-->
+        <result column="id" jdbcType="BIGINT" property="id" />
+        <result column="deviceid" jdbcType="INTEGER" property="deviceid" />
+        <result column="showself" jdbcType="INTEGER" property="showself" />
+        <result column="temperature" jdbcType="INTEGER" property="tempperature" />
+        <result column="humidity" jdbcType="INTEGER" property="humidity" />
+        <result column="pressure" jdbcType="INTEGER" property="pressure" />
+        <result column="percent" jdbcType="INTEGER" property="percent" />
+        <result column="voltage" jdbcType="INTEGER" property="voltage" />
+        <result column="uploadtime" jdbcType="DATE" property="uploadtime" />
+    </resultMap>
+
+    <select id="SelDeviceid" parameterType="java.lang.Integer" resultType="com.ShawnYin.WSP.entity.IssueOne">
+        select *
+        from subtask1 where deviceid = #{deviceid}
+    </select>
+
+<!--    //20201212   获取实时数据，且在后端进行实时表中的更新操作-->
+    <select id="SelDeviceRealTime" parameterType="java.lang.Integer" resultType="com.ShawnYin.WSP.entity.IssueOne">
+        select * from subtask1_online where deviceid = #{deviceid}
+    </select>
+
+<!--    //20201212   获取实时数据，且在后端进行实时表中的更新操作，此处为更新实时表的功能函数-->
+    <insert id="insertDeviceRealTime" parameterType="com.ShawnYin.WSP.entity.IssueOneReal" useGeneratedKeys="true" keyProperty="id">
+        insert into subtask1_online (id, deviceid, showself, temperature, humidity, pressure, percent,voltage,uploadtime)
+        values (#{id,jdbcType=INTEGER}, #{deviceid,jdbcType=INTEGER}, #{showself,jdbcType=INTEGER},
+        #{temperature,jdbcType=INTEGER}, #{humidity,jdbcType=INTEGER}, #{pressure,jdbcType=INTEGER},
+        #{percent,jdbcType=INTEGER}, #{voltage,jdbcType=INTEGER}, #{uploadtime,jdbcType=DATE})
+    </insert>
+
+<!--    //20201211   获取实时数据，不进行实时表中的更新操作-->
+    <select id="Sel"  parameterType="java.lang.Integer" resultType="com.ShawnYin.WSP.entity.IssueOne">
+        select * from subtask1_online where deviceid = #{deviceid}
+    </select>
+<!--    //20201211   获取历史数据，由于数据太多，就只返回二十条-->
+    <select id="SelDevicelist"  parameterType="java.lang.Integer" resultType="com.ShawnYin.WSP.entity.IssueOne">
+        select * from subtask1 where deviceid = #{deviceid} order by deviceid desc limit 0,20
+    </select>
+
+<!--    //20201213 查询所有的数据-->
+    <select id="SelAll"  resultType="com.ShawnYin.WSP.entity.IssueOneReal">
+        select * from subtask1_online
+    </select>
+
+
+</mapper>

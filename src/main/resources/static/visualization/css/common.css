@@ -1,0 +1,17 @@
+.box{
+    background: #eee;
+    padding: 10px 0;
+    white-space: nowrap;/*文本不会换行，文本会在在同一行上继续*/
+    overflow-y:auto;/*可滑动*/
+}
+/*自定义滚动条的伪对象选择器, CSS 可以隐藏滚动条*/
+/*.box::-webkit-scrollbar{
+    display: none;
+}*/
+.box1{
+    width: 49%;
+    margin-left: 3%;
+    height: 100px;
+    background: #fff;
+    display: inline-block;/*行内块元素*/
+}

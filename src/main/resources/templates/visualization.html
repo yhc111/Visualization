@@ -1,0 +1,829 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<title>城市轨道交通感知与综合应用平台</title>
+<link href="/visualization/css/styleVisualization.css"  rel="stylesheet" type="text/css" media="all" />
+<script src="visualization/js/jquery-3.2.0.min.js"></script>
+<script src="/visualization/js/echarts.min.js" charset="utf-8"></script>
+<script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+<script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.93/dist/mapvgl.min.js"></script>
+<script type="text/javascript">
+    function initialize() {
+        // 1. 创建地图实例
+        var bmapgl = new BMapGL.Map('subwayContainer');
+        var point = new BMapGL.Point(108.953216,34.22907);
+        bmapgl.centerAndZoom(point, 14);
+        bmapgl.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        bmapgl.setMapStyleV2({
+            styleId: '9e9a27f4d0e5c6d7863eb8725e1e85bb'
+        });
+        bmapgl.setTilt(60);
+        // 2. 创建MapVGL图层管理器
+        var view = new mapvgl.View({
+            map: bmapgl
+        });
+        // 3. 创建可视化图层，并添加到图层管理器中
+        var layer = new mapvgl.PointLayer({
+            blend: 'lighter',
+            size: function (item) {
+                return item.properties.count;
+            },
+            color: 'rgba(243, 221, 221, 0.9)'
+        });
+        view.addLayer(layer);
+        // 4. 准备好规范化坐标数据
+        var data = [];
+        // 大雁塔站
+        var longitude1 =108.970481;
+        var latitude1 = 34.229479;
+        var number1 = Math.random()*40;
+        var point1 = new BMapGL.Point(longitude1, latitude1);
+        var marker1 = new BMapGL.Marker(point1);        // 创建标注
+        bmapgl.addOverlay(marker1);                     // 将标注添加到地图中
+        marker1.addEventListener("click", function(){
+            window.location.href="/dayanta";
+        });
+        var item = [longitude1,latitude1,number1];
+        data.push({
+            geometry: {
+                type: 'Point',
+                coordinates: [item[0], item[1]]
+            },
+            properties: {
+                count: item[2]
+            }
+        });
+        // 延兴门站
+        var longitude2 = 109.003465;
+        var latitude2 = 34.24991;
+        var number2 = Math.random()*40;
+        var point2 = new BMapGL.Point(longitude2, latitude2);
+        var marker2 = new BMapGL.Marker(point2);        // 创建标注
+        bmapgl.addOverlay(marker2);                     // 将标注添加到地图中
+        marker2.addEventListener("click", function(){
+            window.location.href="/yanxingmen";
+        });
+        var item = [longitude2,latitude2,number2];
+        data.push({
+            geometry: {
+                type: 'Point',
+                coordinates: [item[0], item[1]]
+            },
+            properties: {
+                count: item[2]
+            }
+        });
+        //青龙寺站
+        var longitude3 = 109.000456;
+        var latitude3 = 34.236987;
+        var number3 = Math.random()*40;
+        var point3 = new BMapGL.Point(longitude3, latitude3);
+        var marker3 = new BMapGL.Marker(point3);        // 创建标注
+        bmapgl.addOverlay(marker3);                     // 将标注添加到地图中
+        marker3.addEventListener("click", function(){
+            window.location.href="/qinglongsi";
+        });
+        var item = [longitude3,latitude3,number3];
+        data.push({
+            geometry: {
+                type: 'Point',
+                coordinates: [item[0], item[1]]
+            },
+            properties: {
+                count: item[2]
+            }
+        });
+        //北池头站
+        var longitude4 = 108.983538;
+        var latitude4 = 34.229929;
+        var number4 = Math.random()*40;
+        var point4 = new BMapGL.Point(longitude4, latitude4);
+        var marker4 = new BMapGL.Marker(point4);        // 创建标注
+        bmapgl.addOverlay(marker4);                     // 将标注添加到地图中
+        marker4.addEventListener("click", function(){
+            window.location.href="/beichitou";
+        });
+        var item = [longitude4,latitude4,number4];
+        data.push({
+            geometry: {
+                type: 'Point',
+                coordinates: [item[0], item[1]]
+            },
+            properties: {
+                count: item[2]
+            }
+        });
+        //小寨站
+        var longitude5 = 108.953216;
+        var latitude5 = 34.22907;
+        var number5 = Math.random()*40;
+        var point5 = new BMapGL.Point(longitude5, latitude5);
+        var marker5 = new BMapGL.Marker(point5);        // 创建标注
+        bmapgl.addOverlay(marker5);                     // 将标注添加到地图中
+        marker5.addEventListener("click", function(){
+            window.location.href="/xiaozhai";
+        });
+        var item = [longitude5,latitude5,number5];
+        data.push({
+            geometry: {
+                type: 'Point',
+                coordinates: [item[0], item[1]]
+            },
+            properties: {
+                count: item[2]
+            }
+        });
+        // 5. 关联图层与数据，享受震撼的可视化效果
+        layer.setData(data);
+
+        // 提示信息
+        var opts1 = {
+            //添加信息窗口
+            width: 20,
+            height: 10,
+            title: "大雁塔站"
+        }
+        marker1.addEventListener("mouseover",function () {
+            this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts1));
+        });
+        marker1.addEventListener("mouseout",function () {
+            this.closeInfoWindow();
+        });
+
+        var opts2 = {
+            //添加信息窗口
+            width: 20,
+            height: 10,
+            title: "延兴门站"
+        }
+        marker2.addEventListener("mouseover",function () {
+            this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts2));
+        });
+        marker2.addEventListener("mouseout",function () {
+            this.closeInfoWindow();
+        });
+
+        var opts3 = {
+            //添加信息窗口
+            width: 20,
+            height: 10,
+            title: "青龙寺站"
+        }
+        marker3.addEventListener("mouseover",function () {
+            this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts3));
+        });
+        marker3.addEventListener("mouseout",function () {
+            this.closeInfoWindow();
+        });
+
+        var opts4 = {
+            //添加信息窗口
+            width: 20,
+            height: 10,
+            title: "北池头站"
+        }
+        marker4.addEventListener("mouseover",function () {
+            this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts4));
+        });
+        marker4.addEventListener("mouseout",function () {
+            this.closeInfoWindow();
+        });
+
+        var opts5 = {
+            //添加信息窗口
+            width: 20,
+            height: 10,
+            title: "小寨站"
+        }
+        marker5.addEventListener("mouseover",function () {
+            this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts5));
+        });
+        marker5.addEventListener("mouseout",function () {
+            this.closeInfoWindow();
+        });
+    }
+
+    function loadScript() {
+        var script1 = document.createElement("script");
+        script1.src = "https://api.map.baidu.com/api?v=1.0&type=webgl&ak=vKRbqmmytWCcPk3pXaXZ5wo5gXLaaGZm&callback=initialize";
+        document.body.appendChild(script1);
+    }
+
+    window.onload = loadScript;
+</script>
+<!--<script type="text/javascript" src="https://api.map.baidu.com/api?type=subway&v=1.0&ak=aMhHZ7SSZxh1kTuIoGaQyETsPRiNtf51"></script>-->
+<style type="text/css">
+    #subwayContainer{width:92%; height:84%; margin-left: 4%; margin-top: 1.5%;}
+    .BMap_cpyCtrl {
+        display: none;
+    }
+    .anchorBL {
+        display: none;
+    }
+</style>
+</head>
+<body>
+<div class="bnt">
+    <div class="topbnt_left fl">
+        <ul>
+            <li class="active"><a href="/visualization">信息总览</a></li>
+        </ul>
+    </div>
+    <h1 class="tith1 fl">城市轨道交通感知与综合应用平台</h1>
+    <div class=" fr topbnt_right">
+        <ul>
+            <li><a href="/visualization2">历史数据统计</a></li>
+        </ul>
+    </div>
+</div>
+<!-- bnt end -->
+<div class="left1">
+    <div class="aleftboxttop"><h2 class="tith2">当前时间</h2>
+        <div class="lefttoday_tit" style=" height:8%"><p class="fl" id="zhandianleixing">信息总览</p><p class="fr"></p></div>
+        <div class="lefttoday_number">
+            <div class="timeAndWeather">
+                <div class="data" id="currentDate">
+                    <p id="date" style="margin-top: 10%"></p>
+                    <br>
+                    <p class="time" id="time"></p>
+                    <br>
+                    <p id="week"></p>
+                </div>
+            </div>
+        </div>
+        <!-- lefttoday_number end -->
+    </div>
+    <div class="aleftboxtmidd">
+      <h2 class="tith2">城市实时温湿度</h2>
+        <div  class="puleftboxtbott3 fr" >
+            <div class="widget-inline-box text-center " style="float: left">
+                <br>
+                <p style="font-size: 20px">当前平均温度</p>
+                <h3 class=" ceeb1fd" id="currentWendu" style="font-size: 30px"></h3>
+                <!--<h4 class="text-muted ">较24h前<img src="img/icondown.png" height="16" />1</h4>-->
+            </div>
+            <div class="widget-inline-box text-center " style="float: left">
+                <p style="font-size: 20px">当前平均湿度</p>
+                <h3 class=" c24c9ff" id="currentShidu" style="font-size: 30px"></h3>
+                <!--<h4 class="text-muted ">较24h前<img src="img/iconup.png" height="16" />3</h4>-->
+            </div>
+        </div>
+  </div>
+  <div class="aleftboxtbott">
+    <h2 class="tith2">总服务器运行状态</h2>
+      <div id="CPURAMROM" class="purightboxtopcont"></div>
+</div>
+</div>
+<!--  left1 end -->
+<div class="mrbox">
+      <div class="mrbox_topmidd" style="width: 69%;">
+          <div class="amiddboxttop">
+              <h2 class="tith2 pt1">&nbsp;&nbsp;&nbsp;&nbsp;
+                  西安市地铁站点分布图
+                  <select onchange="window.location=this.value">
+                      <option value="/visualization">总览</option>
+                      <option value="/dayantaTotal">大雁塔</option>
+                      <option value="/yanxingmen">延兴门</option>
+                      <option value="/qinglongsi">青龙寺</option>
+                      <option value="/beichitou">北池头</option>
+                      <option value="/xiaozhaiTotal">小寨</option>
+                  </select>
+              </h2>
+              <div id="subwayContainer"></div>
+          </div>
+          <div class="amidd_bott">
+              <div class="amiddboxtbott1 fl" >
+                  <h2 class="tith2 pt1">总传感器类别统计</h2>
+                  <div id="purightboxtop" class="amiddboxtbott2content"></div>
+              </div>
+              <div class="amiddboxtbott2 fl"><h2 class="tith2 pt1">总人流量趋势</h2>
+                  <div id="arightboxbott1" class="amiddboxtbott2content"></div>
+              </div>
+          </div>
+            <!-- amidd_bott end -->
+          </div>
+        <!-- mrbox_top end -->
+        <div class="mrbox_top_right">
+          <div class="arightboxtop"><h2 class="tith2">紧急异常事件提醒</h2>
+            <div class="lefttoday_tit"><p class="fl">状态：待解决</p><p class="fr"></p></div>
+            <div class="left2_table">
+               <ul>
+                    <li>
+                    <p class="fl"><b>西安市轨道交通</b><br>
+                      描述一<br>
+                    </p>
+                    <p class="fr pt17">2020-04-23</p>
+                    </li>
+                    <li class="bg">
+                    <p class="fl"><b>西安市轨道交通</b><br>
+                      描述二<br>
+                    </p>
+                    <p class="fr pt17">2020-04-23</p>
+                    </li>
+                    <li>
+                    <p class="fl"><b>西安市轨道交通</b><br>
+                      描述三<br>
+                    </p>
+                    <p class="fr pt17">2020-04-23</p>
+                    </li>
+                    <li class="bg">
+                    <p class="fl"><b>西安市轨道交通</b><br>
+                      描述四<br>
+                    </p>
+                    <p class="fr pt17">2020-04-23</p>
+                    </li>
+                    <li>
+                    <p class="fl"><b>西安市轨道交通</b><br>
+                      描述五<br>
+                    </p>
+                    <p class="fr pt17">2020-04-23</p>
+                    </li>
+                    <li class="bg">
+                    <p class="fl"><b>西安市轨道交通</b><br>
+                      描述六<br>
+                    </p>
+                    <p class="fr pt17">2020-04-23</p>
+                    </li>
+               </ul>
+            </div>
+
+          </div>
+            <div class="arightboxbott"><h2 class="tith2 ">当前异常事件统计(近24h)</h2>
+                <div id="yichangzhanbi" class="pleftbox2topcont"></div>
+            </div>
+        </div>
+        <!-- mrbox_top_right end -->
+      </div>
+
+    </div>
+</div>
+
+<script type="text/javascript">
+
+    var url1 = "http://10.70.163.90:8089/currentData";
+
+    function WenDuCurrent() {
+        setInterval(function () {
+            var newData = 0;
+            $.ajax({
+                //请求方式
+                type : "POST",
+                //请求媒体类型
+                contentType: "application/json;charset=UTF-8",
+                //数据，json字符串
+                data : JSON.stringify({"dataType":"temperature"}),
+                dataType:"json",
+                //请求地址
+                url : url1,
+                //请求成功
+                success : function(result) {
+                    var averageTemp = 0.0;
+                    var length = 0;
+                    for (var val in result){
+                        if (val != "sensorNum"){
+                            averageTemp += result[val];
+                            length++;
+                        }
+                    }
+                    averageTemp = averageTemp/length;
+                    $("#currentWendu").html(averageTemp.toFixed(2) + "℃");
+                },
+                //请求失败，包含具体的错误信息
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }, 1000);
+    }
+
+    function ShiDuCurrent() {
+        setInterval(function () {
+            var newData = 0;
+            $.ajax({
+                //请求方式
+                type : "POST",
+                //请求媒体类型
+                contentType: "application/json;charset=UTF-8",
+                //数据，json字符串
+                data : JSON.stringify({"dataType":"humidity"}),
+                dataType:"json",
+                //请求地址
+                url : url1,
+                //请求成功
+                success : function(result) {
+                    var averageHumi = 0.0;
+                    var length = 0;
+                    for (var val in result){
+                        if (val != "sensorNum"){
+                            averageHumi += result[val];
+                            length++;
+                        }
+                    }
+                    averageHumi = averageHumi/length;
+                    $("#currentShidu").html(averageHumi.toFixed(2) + "%");
+                },
+                //请求失败，包含具体的错误信息
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }, 1000);
+    }
+
+    WenDuCurrent();
+    ShiDuCurrent();
+
+
+    function writeCurrentDate() {
+        var now = new Date();
+        var year = now.getFullYear(); //得到年份
+        var month = now.getMonth();//得到月份
+        var date = now.getDate();//得到日期
+        var day = now.getDay();//得到周几
+        var hour = now.getHours();//得到小时
+        var minu = now.getMinutes();//得到分钟
+        var sec = now.getSeconds();//得到秒
+        var MS = now.getMilliseconds();//获取毫秒
+        var week;
+        month = month + 1;
+        if (month < 10) month = "0" + month;
+        if (date < 10) date = "0" + date;
+        if (hour < 10) hour = "0" + hour;
+        if (minu < 10) minu = "0" + minu;
+        if (sec < 10) sec = "0" + sec;
+        if (MS < 100) MS = "0" + MS;
+        var arr_week = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+        week = arr_week[day];
+        var time = "";
+        var date1 = "";
+        var week1 = "";
+        time = hour + ":" + minu + ":" + sec;
+        date1 = year + "年" + month + "月" + date + "日";
+        week1 = week;
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        $("#time").html(time);
+        $("#date").html(date1);
+        $("#week").html(week1);
+    };
+    //设置得到当前日期的函数的执行间隔时间，每1000毫秒刷新一次。
+    setInterval(writeCurrentDate, 1000);
+</script>
+
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('purightboxtop'));
+    option = {
+        tooltip:{
+            trigger:'item',
+            formatter: "{a}<br/>{b}:{c}",
+            show:true,
+        },
+        color:['#7ecef4'],
+        backgroundColor: 'rgba(1,202,217,.2)',
+        grid: {
+            left:20,
+            right:50,
+            top:23,
+            bottom:30,
+            containLabel: true
+        },
+
+        xAxis: {
+            type: 'value',
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.2)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,0)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,1)"
+            },
+            data: ['20','40','60','80','100','120'],
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.5)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.1)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,.5)"
+            },
+            data: ['可燃气体','硫化气体','一氧化碳','甲烷','PM2.5','温度','湿度','气压','震动','渗水']
+        },
+        series: [
+            {
+                name: '传感器数量',
+                type: 'bar',
+                barWidth :9,
+                itemStyle: {
+                    normal: {
+                        // color: new echarts.graphic.LinearGradient(
+                        //     1, 0, 0, 1,
+                        //     [
+                        //         {offset: 0, color: '#b266ff'},
+                        //         {offset: 1, color: '#121b87'}
+                        //     ]
+                        // )
+                        color:function (params){
+                            var colorlist =['#9E480D', '#EE1F93', '#4574C6', '#F17D34', '#A7A7A7','#FFC000', '#FF6C00', '#9CFF00', '#0078FF', '#FFFF00'];
+
+                            return colorlist[params.dataIndex]
+                        }
+                    }
+                },
+                data: [81, 62, 90, 34, 18, 21, 22, 34, 45, 56]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    var now = new Date();
+    //当前日期赋值给当前日期输入框中（jQuery easyUI）
+    var Ago = []
+    for (var i = 0; i < 60; i++){
+        var ago = new Date(now.setMinutes(now.getMinutes() - 1));
+        Ago[i] = i;
+    }
+
+    var myChart = echarts.init(document.getElementById('CPURAMROM'));
+    option = {
+        color:['#00ffff','#7fd7b1', '#5578cf', '#5ebbeb', '#d16ad8','#f8e19a',  '#00b7ee', '#81dabe','#5fc5ce'],
+        backgroundColor: 'rgba(1,202,217,.2)',
+
+        grid: {
+            left: '5%',
+            right: '8%',
+            bottom: '7%',
+            top:'8%',
+            containLabel: true,
+            data:['CPU','RAM','ROM']
+        },
+        legend: {
+            top: 5,
+            textStyle:{
+                fontSize:10,
+                color:'rgba(255,255,255,.6)'
+            },
+            data:['CPU','RAM','ROM']
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            //name: 'time',
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.2)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.1)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,.7)"
+            },
+            data: Ago
+        },
+        yAxis: {
+            type: 'value',
+            min: 0,
+            max: 100,
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.2)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.1)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,.7)",
+                formatter: '{value}'
+            },
+        },
+        series: [
+            {
+                name:'CPU',
+                type:'line',
+                stack: 'CPU',
+                symbol: 'none',
+                //areaStyle: {normal: {}},
+                data:[51.68, 54.23, 54.32, 50.71, 51.24, 54.79, 51.7, 52.82, 52.73, 53.78, 51.72, 50.06, 50.57, 51.24, 53.12, 51.31, 50.81, 52.24, 50.5, 51.3, 52.11, 54.1, 50.54, 53.44, 52.07, 53.84, 51.93, 54.6, 54.37, 53.19, 53.29, 51.07, 54.67, 54.05, 54.65, 54.64, 52.1, 53.43, 54.05, 52.97, 53.16, 52.46, 52.57, 52.5, 52.06, 52.73, 54.33, 50.76, 50.88, 51.95, 52.52, 53.03, 51.84, 53.87, 50.85, 51.99, 52.33, 53.45, 50.0, 51.78]
+            },
+            {
+                name:'RAM',
+                type:'line',
+                stack: 'RAM',
+                symbol: 'none',
+                //areaStyle: {normal: {}},
+                data:[40.38, 42.08, 42.36, 40.11, 42.61, 40.47, 40.34, 42.53, 40.31, 42.94, 40.85, 42.37, 42.28, 42.15, 40.24, 40.4, 40.1, 40.0, 41.61, 42.59, 41.86, 41.36, 41.33, 41.97, 40.8, 41.74, 41.69, 42.72, 40.81, 41.57, 42.23, 41.04, 41.15, 42.45, 41.43, 40.09, 42.69, 41.95, 42.15, 40.61, 41.09, 41.12, 41.78, 42.1, 41.43, 42.16, 42.87, 41.28, 42.38, 42.49, 40.93, 41.16, 41.1, 40.87, 41.24, 41.01, 41.13, 40.92, 40.72, 42.41]
+            },
+            {
+                name:'ROM',
+                type:'line',
+                stack: 'ROM',
+                symbol: 'none',
+                //areaStyle: {normal: {}},
+                data:[39.4, 39.95, 39.64, 41.42, 40.33, 40.81, 41.38, 42.44, 41.95, 42.13, 38.21, 42.12, 40.01, 42.25, 40.51, 40.73, 40.01, 42.2, 41.7, 40.3, 41.34, 39.65, 39.4, 42.8, 39.9, 42.86, 41.72, 42.41, 42.81, 41.6, 41.22, 38.44, 40.03, 38.09, 42.39, 38.82, 42.15, 39.57, 42.16, 41.23, 38.24, 39.51, 40.93, 38.11, 38.71, 40.89, 39.61, 39.99, 40.09, 42.02, 39.96, 40.89, 42.85, 41.71, 38.72, 39.93, 42.0, 40.8, 40.54, 41.21]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+
+    var now = new Date();
+    //当前日期赋值给当前日期输入框中（jQuery easyUI）
+    var Ago = []
+    for (var i = 0; i < 60; i++){
+        var ago = new Date(now.setMinutes(now.getMinutes() - 1));
+        Ago[i] = i;
+    }
+
+    var myChart = echarts.init(document.getElementById('arightboxbott1'));
+    option = {
+        color:['#00ffff','#7fd7b1', '#5578cf', '#5ebbeb', '#d16ad8','#f8e19a',  '#00b7ee', '#81dabe','#5fc5ce'],
+        backgroundColor: 'rgba(1,202,217,.2)',
+
+        grid: {
+            left: '5%',
+            right: '8%',
+            bottom: '7%',
+            top:'8%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.2)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.1)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,.7)"
+            },
+            data: Ago
+        },
+        yAxis: {
+            type: 'value',
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.2)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.1)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,.7)"
+            },
+        },
+        series: [
+            {
+                name:'人流量',
+                type:'line',
+                stack: '总量',
+                areaStyle: {normal: {}},
+                data:[10086, 11769, 19064, 13422, 18085, 16677, 19579, 19733, 16623, 10440, 14649, 17251, 16551, 10276, 17284, 19947, 16120, 19465, 18781, 14772, 12103, 15396, 14944, 10730, 12478, 13894, 19590, 13624, 11736, 13982, 18139, 16085, 13206, 11977, 11830, 13156, 16106, 11693, 16203, 13181, 10082, 13137, 13524, 15362, 11183, 18641, 17832, 11476, 10732, 14009, 15028, 10111, 10646, 19269, 10487, 19338, 18331, 17927, 17683, 14946]
+            }
+
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('yichangzhanbi'));
+    option = {
+        tooltip:{
+            trigger:'item',
+            formatter: "{a}<br/>{b}:{c} ({d}%)",
+            show:true,
+        },
+
+        color:['#E2DAC7','#F99851', '#FCEF03', '#47B971', '#EE1F93','#8E78C0',  '#03ADE8', '#F4808D','#000000'],
+        backgroundColor: 'rgba(1,202,217,.2)',
+        grid: {
+            left:20,
+            right:20,
+            top:0,
+            bottom:20
+        },
+        // legend: {
+        //     top:10,
+        //     textStyle:{
+        //         fontSize: 10,
+        //         color:'rgba(255,255,255,.7)'
+        //     },
+        //     data:['温度','湿度','坍塌','震动','渗水','异物入侵','位移','气压','可燃气体','硫化气体','一氧化碳','甲烷','PM2.5']
+        // },
+        series : [
+            {
+                name: '占比详情',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '55%'],
+                data:[
+                    {value:10, name:'温度'},
+                    {value:12, name:'湿度'},
+                    {value:0, name:'坍塌'},
+                    {value:7, name:'震动'},
+                    {value:21, name:'异物入侵'},
+                    {value:1, name:'位移'},
+                    {value:1, name:'气压'},
+                    {value:0, name:'可燃气体'},
+                    {value:0, name:'硫化气体'},
+                    {value:0, name:'一氧化碳'},
+                    {value:0, name:'甲烷'},
+                    {value:4, name:'PM2.5'}
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<!--<script type="text/javascript">-->
+<!--    var subwayCityName = '西安';-->
+<!--    var list = BMapSub.SubwayCitiesList;-->
+<!--    var subwaycity = null;-->
+<!--    for (var i = 0; i < list.length; i++) {-->
+<!--        if (list[i].name === subwayCityName) {-->
+<!--            subwaycity = list[i];-->
+<!--            break;-->
+<!--        }-->
+<!--    }-->
+<!--    // 获取西安地铁数据-初始化地铁图-->
+<!--    var subway = new BMapSub.Subway('subwayContainer', subwaycity.citycode);-->
+<!--    var zoomControl = new BMapSub.ZoomControl({-->
+<!--        anchor: BMAPSUB_ANCHOR_BOTTOM_RIGHT,-->
+<!--        offset: new BMapSub.Size(10,100)-->
+<!--    });-->
+<!--    subway.setCenter("大雁塔");-->
+<!--    subway.addControl(zoomControl);-->
+<!--    subway.setZoom(0.5);-->
+
+<!--    subway.addEventListener('tap', function(e) {-->
+<!--        var Name = e.station.name;-->
+<!--        if (Name == "小寨"){-->
+<!--            window.location.href="/xiaozhai"-->
+<!--        } else if (Name == "吉祥村"){-->
+<!--            window.location.href="/jixiangcun"-->
+<!--        } else if (Name == "大雁塔"){-->
+<!--            window.location.href="/dayanta"-->
+<!--        } else if (Name == "北池头"){-->
+<!--            window.location.href="/beichitou"-->
+<!--        } else if (Name == "青龙寺"){-->
+<!--            window.location.href="/qinglongsi"-->
+<!--        } else {-->
+<!--            alert("站点信息暂未开放！")-->
+<!--        }-->
+<!--    });-->
+<!--</script>-->
+</body>
+</html>

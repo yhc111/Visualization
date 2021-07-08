@@ -1,0 +1,841 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <title>城市轨道交通感知与综合应用平台</title>
+    <link href="/visualization/css/styleZhandian.css" rel="stylesheet" type="text/css" media="all"/>
+    <script src="visualization/js/jquery-3.2.0.min.js"></script>
+    <script src="/visualization/js/echarts.min.js" charset="utf-8"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.93/dist/mapvgl.min.js"></script>
+    <script type="text/javascript">
+        function initialize() {
+            // 1. 创建地图实例
+            var bmapgl = new BMapGL.Map('subwayContainer');
+            var point = new BMapGL.Point(108.953216, 34.22907);
+            bmapgl.centerAndZoom(point, 18);
+            bmapgl.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+            bmapgl.setMapStyleV2({
+                styleId: '9e9a27f4d0e5c6d7863eb8725e1e85bb'
+            });
+            bmapgl.setTilt(60);
+            // 2. 创建MapVGL图层管理器
+            var view = new mapvgl.View({
+                map: bmapgl
+            });
+            // 3. 创建可视化图层，并添加到图层管理器中
+            var layer = new mapvgl.PointLayer({
+                blend: 'lighter',
+                size: function (item) {
+                    return item.properties.count;
+                },
+                color: 'rgba(243, 221, 221, 0.9)'
+            });
+            view.addLayer(layer);
+            // 4. 准备好规范化坐标数据
+            var data = [];
+            // 大雁塔站
+            var longitude1 = 108.970481;
+            var latitude1 = 34.229479;
+            var number1 = Math.random() * 40;
+            var point1 = new BMapGL.Point(longitude1, latitude1);
+            var marker1 = new BMapGL.Marker(point1);        // 创建标注
+            bmapgl.addOverlay(marker1);                     // 将标注添加到地图中
+            marker1.addEventListener("click", function () {
+                window.location.href = "/dayanta";
+            });
+            var item = [longitude1, latitude1, number1];
+            data.push({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [item[0], item[1]]
+                },
+                properties: {
+                    count: item[2]
+                }
+            });
+            // 延兴门站
+            var longitude2 = 109.003465;
+            var latitude2 = 34.24991;
+            var number2 = Math.random() * 40;
+            var point2 = new BMapGL.Point(longitude2, latitude2);
+            var marker2 = new BMapGL.Marker(point2);        // 创建标注
+            bmapgl.addOverlay(marker2);                     // 将标注添加到地图中
+            marker2.addEventListener("click", function () {
+                window.location.href = "/yanxingmen";
+            });
+            var item = [longitude2, latitude2, number2];
+            data.push({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [item[0], item[1]]
+                },
+                properties: {
+                    count: item[2]
+                }
+            });
+            //青龙寺站
+            var longitude3 = 109.000456;
+            var latitude3 = 34.236987;
+            var number3 = Math.random() * 40;
+            var point3 = new BMapGL.Point(longitude3, latitude3);
+            var marker3 = new BMapGL.Marker(point3);        // 创建标注
+            bmapgl.addOverlay(marker3);                     // 将标注添加到地图中
+            marker3.addEventListener("click", function () {
+                window.location.href = "/qinglongsi";
+            });
+            var item = [longitude3, latitude3, number3];
+            data.push({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [item[0], item[1]]
+                },
+                properties: {
+                    count: item[2]
+                }
+            });
+            //北池头站
+            var longitude4 = 108.983538;
+            var latitude4 = 34.229929;
+            var number4 = Math.random() * 40;
+            var point4 = new BMapGL.Point(longitude4, latitude4);
+            var marker4 = new BMapGL.Marker(point4);        // 创建标注
+            bmapgl.addOverlay(marker4);                     // 将标注添加到地图中
+            marker4.addEventListener("click", function () {
+                window.location.href = "/beichitou";
+            });
+            var item = [longitude4, latitude4, number4];
+            data.push({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [item[0], item[1]]
+                },
+                properties: {
+                    count: item[2]
+                }
+            });
+            //小寨站
+            var longitude5 = 108.953216;
+            var latitude5 = 34.22907;
+            var number5 = Math.random() * 40;
+            var point5 = new BMapGL.Point(longitude5, latitude5);
+            var marker5 = new BMapGL.Marker(point5);        // 创建标注
+            bmapgl.addOverlay(marker5);                     // 将标注添加到地图中
+            marker5.addEventListener("click", function () {
+                window.location.href = "/xiaozhai";
+            });
+            var item = [longitude5, latitude5, number5];
+            data.push({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [item[0], item[1]]
+                },
+                properties: {
+                    count: item[2]
+                }
+            });
+            var item = [longitude5, latitude5, number5];
+            data.push({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [item[0], item[1]]
+                },
+                properties: {
+                    count: item[2]
+                }
+            });
+            // 5. 关联图层与数据，享受震撼的可视化效果
+            layer.setData(data);
+
+            // 提示信息
+            var opts1 = {
+                //添加信息窗口
+                width: 20,
+                height: 10,
+                title: "石家街站"
+            }
+            marker1.addEventListener("mouseover", function () {
+                this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts1));
+            });
+            marker1.addEventListener("mouseout", function () {
+                this.closeInfoWindow();
+            });
+
+            var opts2 = {
+                //添加信息窗口
+                width: 20,
+                height: 10,
+                title: "延兴门站"
+            }
+            marker2.addEventListener("mouseover", function () {
+                this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts2));
+            });
+            marker2.addEventListener("mouseout", function () {
+                this.closeInfoWindow();
+            });
+
+            var opts3 = {
+                //添加信息窗口
+                width: 20,
+                height: 10,
+                title: "青龙寺站"
+            }
+            marker3.addEventListener("mouseover", function () {
+                this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts3));
+            });
+            marker3.addEventListener("mouseout", function () {
+                this.closeInfoWindow();
+            });
+
+            var opts4 = {
+                //添加信息窗口
+                width: 20,
+                height: 10,
+                title: "北池头站"
+            }
+            marker4.addEventListener("mouseover", function () {
+                this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts4));
+            });
+            marker4.addEventListener("mouseout", function () {
+                this.closeInfoWindow();
+            });
+
+            var opts5 = {
+                //添加信息窗口
+                width: 20,
+                height: 10,
+                title: "小寨站"
+            }
+            marker5.addEventListener("mouseover", function () {
+                this.openInfoWindow(new BMapGL.InfoWindow("紧急事件描述", opts5));
+            });
+            marker5.addEventListener("mouseout", function () {
+                this.closeInfoWindow();
+            });
+        }
+
+        function loadScript() {
+            var script1 = document.createElement("script");
+            script1.src = "https://api.map.baidu.com/api?v=1.0&type=webgl&ak=vKRbqmmytWCcPk3pXaXZ5wo5gXLaaGZm&callback=initialize";
+            document.body.appendChild(script1);
+        }
+
+        window.onload = loadScript;
+    </script>
+    <!-- SYB 实时视频切换函数 -->
+    <script type="text/javascript">
+
+        function change()
+        {
+            let chkObj = null;
+            const obj = document.getElementsByName("age");
+            for(let i = 0; i < obj.length; i++)
+            {
+                if(obj[i].checked)
+                {
+                    chkObj = obj[i].value;
+                }
+            }
+            let source = "http://10.70.135.162:5000/video";
+            let source1 = source + (Number(chkObj) * 4 - 3);
+            let source2 = source + (Number(chkObj) * 4 - 2);
+            let source3 = source + (Number(chkObj) * 4 - 1);
+            let source4 = source + (Number(chkObj) * 4);
+            console.log(source1, source2, source3, source4)
+            document.getElementById("img1").src=source1;
+            document.getElementById("img2").src=source2;
+            document.getElementById("img3").src=source3;
+            document.getElementById("img4").src=source4;
+
+        }
+
+
+    </script>
+    <!--<script type="text/javascript" src="https://api.map.baidu.com/api?type=subway&v=1.0&ak=aMhHZ7SSZxh1kTuIoGaQyETsPRiNtf51"></script>-->
+    <style type="text/css">
+        #subwayContainer {
+            width: 92%;
+            height: 85%;
+            margin-left: 4%;
+            margin-top: 0%;
+        }
+
+        .BMap_cpyCtrl {
+            display: none;
+        }
+
+        .anchorBL {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="bnt">
+    <div class="topbnt_left fl">
+        <ul id="idx">
+            <li><a href="/visualization">站点总览</a></li>
+            <!--            <li class="active"><a href="#" onclick="environment()">环境监测</a></li>-->
+            <li><a href="/xiaozhai">环境监测</a></li>
+            <li id="safebutton"><a href="/xiaozhaiPublicSafe" >公共安全</a></li>
+            <li id="videobutton"><a href="/xiaozhairealVideo">实时监控</a></li>
+            <!--            <li><a href="#" onclick="gasLeakage()">异常事件</a></li>-->
+        </ul>
+    </div>
+    <h1 class="tith1 fl">城市轨道交通感知与综合应用平台</h1>
+    <div class=" fr topbnt_right">
+        <ul>
+            <li class="active"  id="robotButton"><a href="/robot" >机器人</a></li>
+            <li><a href="/visualization2">历史数据统计</a></li>
+            <li id="click_pop_box"><a class="click_pop" id="click_pop" href="#">授权接入</a></li>
+
+
+        </ul>
+    </div>
+</div>
+<!-- bnt end -->
+<div class="robotboxttop" id="robotsweb" >
+    <iframe src=" http://183.6.189.130:8081/?g_a=xbgd01&g_p=2d505082b3a0948b235fad56e6d2d50d" width="100%"
+            height="100%"></iframe>
+</div>
+
+
+<!--<div class="videoleft1" id="totalleft" width="25%" style="padding-right: 3%">-->
+<!--    <div class="videoaleftboxttop"><h2 class="tith2">当前站点与时间</h2>-->
+<!--        <div class="lefttoday_tit" style=" height:8%"><p class="fl" id="zhandianleixing">地下站</p><p class="fr"></p></div>-->
+<!--        <div class="lefttoday_number">-->
+<!--            <div class="timeAndWeather">-->
+<!--                <div class="data" id="currentDate">-->
+<!--                    <p id="stationName" style="margin-top: 5%">小寨站</p>-->
+<!--                    <p id="date" style="margin-top:5%; font-size: 20px"></p>-->
+<!--                    <p id="week" style="font-size: 20px"></p>-->
+<!--                    <p class="time" id="time" style="margin-top:5%; font-size: 20px"></p>-->
+<!--                </div>-->
+<!--            </div>-->
+<!--        </div>-->
+<!--        &lt;!&ndash; lefttoday_number end &ndash;&gt;-->
+<!--    </div>-->
+<!--    <div id="videoTotal" class="videoaleftboxbottom">-->
+<!--        <h2 class="tith2">监控选择</h2>-->
+<!--        <div class="videobackground" style="margin-top: 2%;">-->
+<!--            <div id="multi_page" class="multi-page report-wrap-module report-scroll-module" scrollshow="true" style="width: 100%;height: 64%; float: right;padding-right: 0%" >-->
+<!--                <div class="head-con">-->
+
+<!--                </div>-->
+<!--                <div class="cur-list">-->
+<!--                    <ul class="list-box">-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="1" checked/>01-04号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="2"/>05-08号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="3"/>09-12号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="4"/>13-16号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="5" />17-20号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="6"/>21-24号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="7"/>25-28号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="8"/>29-32号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="9"/>33-36号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="10"/>37-40号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="11"/>41-44号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="12"/>45-48号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="13"/>49-52号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="14"/>53-56号摄像头</br>-->
+<!--                        <input style="margin-left:4%" type="radio" name="age" value="15"/>57-60号摄像头</br>-->
+
+
+<!--                    </ul>&lt;!&ndash;&ndash;&gt;-->
+<!--                </div>-->
+
+<!--            </div>-->
+<!--        </div>-->
+<!--        <input type="button" name="sub" value="确定" id="sub"  onclick="change()" style="height: 8%;width: 29%; margin-left:39%;margin-top: 3%">-->
+
+<!--    </div>-->
+
+<!--</div>-->
+<!--&lt;!&ndash; mrbox_top end &ndash;&gt;-->
+
+
+<!--<div id="videoLeft" class="mrbox_top_videoeleft">-->
+<!--    <div class="col-md-6 window1 video-window" alt="1">-->
+<!--        <img id="img1" src="http://10.70.135.162:5000/video1" style="height: 100%; width: 100%">-->
+<!--    </div>-->
+<!--    <div class="col-md-6 window2 video-window" alt="2">-->
+<!--        <img id="img3" src="http://10.70.135.162:5000/video2" style="height: 100%; width: 100%">-->
+<!--    </div>-->
+<!--</div>-->
+<!--<div id="videoRight" class="mrbox_top_videoeright">-->
+<!--    <div class="col-md-6 window3 video-window" alt="3" >-->
+<!--        <img id="img2" src="http://10.70.135.162:5000/video2" style="height: 100%; width: 100%">-->
+<!--    </div>-->
+<!--    <div class="col-md-6 window4 video-window" alt="4" >-->
+<!--        <img id="img4" src="http://10.70.135.162:5000/video2" style="height: 100%; width: 100%">-->
+<!--    </div>-->
+
+<!--</div>-->
+
+
+
+<!--遮罩层-->
+<div class="bgPop"></div>
+<!--弹出框-->
+<div class="pop">
+    <div class="pop-top" style="text-align: center">
+        授权接入
+        <span class="pop-close">Ｘ</span>
+    </div>
+    <div class="pop-content">
+        <table class="panel-table" bordercolor="#deefff" border="1">
+            <thead bgcolor="#971212" align="center">
+            <tr height="50">
+                <th>传感器ID</th>
+                <th>传感器信息</th>
+                <th>备注</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr height="50" class="aaa" style="font-size: 16px;" align="center">
+                <td>10000001</td>
+                <td>传感器描述</td>
+                <td></td>
+            </tr>
+            <tr height="50" class="aaa" style="font-size: 16px;" align="center">
+                <td>10000002</td>
+                <td>传感器描述</td>
+                <td></td>
+            </tr>
+            <tr height="50" class="aaa" style="font-size: 16px;" align="center">
+                <td>10000003</td>
+                <td>传感器描述</td>
+                <td></td>
+            </tr>
+
+            <tr height="50" class="aaa" style="font-size: 16px;" align="center">
+                <td>10000004</td>
+                <td>传感器描述</td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pop-foot">
+        <input type="button" value="确定" class="pop-cancel pop-close pop-commit">
+    </div>
+</div>
+
+<script type="text/javascript">
+    var btns = -1;
+
+    function writeCurrentDate() {
+        var now = new Date();
+        var year = now.getFullYear(); //得到年份
+        var month = now.getMonth();//得到月份
+        var date = now.getDate();//得到日期
+        var day = now.getDay();//得到周几
+        var hour = now.getHours();//得到小时
+        var minu = now.getMinutes();//得到分钟
+        var sec = now.getSeconds();//得到秒
+        var MS = now.getMilliseconds();//获取毫秒
+        var week;
+        month = month + 1;
+        if (month < 10) month = "0" + month;
+        if (date < 10) date = "0" + date;
+        if (hour < 10) hour = "0" + hour;
+        if (minu < 10) minu = "0" + minu;
+        if (sec < 10) sec = "0" + sec;
+        if (MS < 100) MS = "0" + MS;
+        var arr_week = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+        week = arr_week[day];
+        var time = "";
+        var date1 = "";
+        var week1 = "";
+        time = hour + ":" + minu + ":" + sec;
+        date1 = year + "年" + month + "月" + date + "日";
+        week1 = week;
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        $("#time").html(time);
+        $("#date").html(date1);
+        $("#week").html(week1);
+    };
+    //设置得到当前日期的函数的执行间隔时间，每1000毫秒刷新一次。
+    setInterval(writeCurrentDate, 1000);
+
+    function FlowTotal() {
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        var Ago = [];
+        for (var i = 0; i < 60; i++) {
+            var ago = new Date(now.setMinutes(now.getMinutes() - 1));
+            Ago[i] = i;
+        }
+
+        var myChart = echarts.init(document.getElementById('averageShidu'));
+        myChart.clear();
+        option = {
+            color: ['#00ffff', '#7fd7b1', '#5578cf', '#5ebbeb', '#d16ad8', '#f8e19a', '#00b7ee', '#81dabe', '#5fc5ce'],
+            backgroundColor: 'rgba(1,202,217,.2)',
+
+            grid: {
+                left: '5%',
+                right: '8%',
+                bottom: '7%',
+                top: '8%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                axisLine: {
+                    lineStyle: {
+                        color: 'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel: {
+                    color: "rgba(255,255,255,.7)"
+                },
+                data: Ago
+            },
+            yAxis: {
+                type: 'value',
+                axisLine: {
+                    lineStyle: {
+                        color: 'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine: {
+                    lineStyle: {
+                        color: 'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel: {
+                    color: "rgba(255,255,255,.7)"
+                },
+            },
+            series: [
+                {
+                    name: '人流量',
+                    type: 'line',
+                    stack: '总量',
+                    areaStyle: {normal: {}},
+                    data: [10086, 11769, 19064, 13422, 18085, 16677, 19579, 19733, 16623, 10440, 14649, 17251, 16551, 10276, 17284, 19947, 16120, 19465, 18781, 14772, 12103, 15396, 14944, 10730, 12478, 13894, 19590, 13624, 11736, 13982, 18139, 16085, 13206, 11977, 11830, 13156, 16106, 11693, 16203, 13181, 10082, 13137, 13524, 15362, 11183, 18641, 17832, 11476, 10732, 14009, 15028, 10111, 10646, 19269, 10487, 19338, 18331, 17927, 17683, 14946]
+                }
+
+            ]
+        };
+        myChart.setOption(option);
+    }
+
+    var url1 = "http://10.70.163.90:8089/currentData";
+    var flag_init_1 = true;
+    var flag_init_2 = true;
+    var flag_init_3 = true;
+    var flag_init_4 = true;
+
+    function oneMinute() {
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        //获取小时+分钟
+        // var test = new Date("December 25, 1995 23:00:00");
+        // var testminu = test.getMinutes()-1;
+        // var a = new Date(test.setMinutes(testminu));
+        // alert(a.getMinutes());
+        var hour = now.getHours(); //得到小时
+        var minu = now.getMinutes(); //得到分钟
+        var sec = now.getSeconds(); //得到秒
+        var minuAgo = now.getMinutes() - 1;
+        var currentTime1 = "";
+        var currentTime2 = "";
+        if (minuAgo == -1) {
+            minuAgo = 59;
+            var hourAgo = hour - 1;
+            if (hourAgo == -1) {
+                hourAgo = 23;
+            }
+            if (hour < 10) hour = "0" + hour;
+            if (minu < 10) minu = "0" + minu;
+            if (sec < 10) sec = "0" + sec;
+            if (minuAgo < 10) minuAgo = "0" + minuAgo;
+            currentTime1 = hour + ":" + minu + ":" + sec;
+            currentTime2 = hourAgo + ":" + minuAgo + ":" + sec;
+        } else {
+            if (hour < 10) hour = "0" + hour;
+            if (minu < 10) minu = "0" + minu;
+            if (sec < 10) sec = "0" + sec;
+            if (minuAgo < 10) minuAgo = "0" + minuAgo;
+            currentTime1 = hour + ":" + minu + ":" + sec;
+            currentTime2 = hour + ":" + minuAgo + ":" + sec;
+        }
+        var Ago = [];
+        Ago[0] = currentTime2;
+        for (var i = 1; i < 59; i++) {
+            Ago[i] = 0;
+        }
+        Ago[59] = currentTime1;
+        return {
+            timeAxis: Ago,
+            currentSec: sec
+        }
+    }
+
+    function oneMinute_2interval() {
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        //获取小时+分钟
+        // var test = new Date("December 25, 1995 23:00:00");
+        // var testminu = test.getMinutes()-1;
+        // var a = new Date(test.setMinutes(testminu));
+        // alert(a.getMinutes());
+        var hour = now.getHours(); //得到小时
+        var minu = now.getMinutes(); //得到分钟
+        var sec = now.getSeconds(); //得到秒
+        var minuAgo = now.getMinutes() - 1;
+        var currentTime1 = "";
+        var currentTime2 = "";
+        if (minuAgo == -1) {
+            minuAgo = 59;
+            var hourAgo = hour - 1;
+            if (hourAgo == -1) {
+                hourAgo = 23;
+            }
+            if (hour < 10) hour = "0" + hour;
+            if (minu < 10) minu = "0" + minu;
+            if (minuAgo < 10) minuAgo = "0" + minuAgo;
+            currentTime1 = hour + ":" + minu + ":" + sec;
+            currentTime2 = hourAgo + ":" + minuAgo + ":" + sec;
+        } else {
+            if (hour < 10) hour = "0" + hour;
+            if (minu < 10) minu = "0" + minu;
+            if (minuAgo < 10) minuAgo = "0" + minuAgo;
+            currentTime1 = hour + ":" + minu + ":" + sec;
+            currentTime2 = hour + ":" + minuAgo + ":" + sec;
+        }
+        var Ago = [];
+        Ago[0] = currentTime2;
+        for (var i = 1; i < 29; i++) {
+            Ago[i] = 0;
+        }
+        Ago[29] = currentTime1;
+        return {
+            timeAxis: Ago,
+            currentSec: sec
+        }
+    }
+
+
+
+    var now = new Date();
+    //当前日期赋值给当前日期输入框中（jQuery easyUI）
+    var Ago = []
+    for (var i = 0; i < 24; i++) {
+        var ago = new Date(now.setHours(now.getHours() - 1));
+        Ago[i] = i;
+    }
+
+
+    $(document).ready(function () {
+        $('.pop-close').click(function () {
+            $('.aaa').css("background-color", "#01064A")
+            $('.bgPop,.pop').hide();
+        });
+        $('#click_pop').click(function () {
+            $('.bgPop,.pop').show();
+        });
+    });
+
+    //授权接入的传感器列表点击事件
+    $('.aaa').click(function () {
+        $('.aaa').each(function (key, value) {
+            if ($(this).css("background-color") == "rgb(29, 49, 82)") {
+                $(this).css("background-color", "#01064A");
+            }
+        });
+        if ($(this).css("background-color") == "rgb(29, 49, 82)") {
+            $(this).css("background-color", "#01064A")
+        } else if ($(this).css("background-color") != "rgb(29, 49, 82)") {
+            $(this).css("background-color", "#1d3152");
+        }
+    })
+
+    $('.pop-commit').click(function () {
+        $('.aaa').each(function (key, value) {
+            if ($(this).css("background-color") == "rgb(29, 49, 82)") {
+                btns = $(this).children("td").get(0).innerHTML;
+            }
+        });
+        // WenDu(btns);
+        // ShiDu(btns);
+        // Yali(btns);
+        // DianliangDianya(btns);
+    });
+
+
+    function FlowTotal() {
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        var Ago = []
+        for (var i = 0; i < 60; i++) {
+            var ago = new Date(now.setMinutes(now.getMinutes() - 1));
+            Ago[i] = i;
+        }
+    }
+
+
+
+    function robot() {
+        var safebutton = document.getElementById('safebutton');
+        safebutton.style.display = "none";
+        var robotsweb = document.getElementById('robotsweb');
+        robotsweb.style.display = "";
+        var totalleft = document.getElementById('totalleft');
+        totalleft.style.display = "none";
+        var mapbox = document.getElementById('mapbox');
+        mapbox.style.display = "none";
+        //<li><a className="click_pop" id="click_pop" href="#">授权接入</a></li>
+        var click_pop_box = document.getElementById('click_pop_box');
+        click_pop_box.style.display = "none";
+
+        var videoTotal = document.getElementById('videoTotal');
+        videoTotal.style.display = "none";
+
+        var videoLeft = document.getElementById('videoLeft');
+        videoLeft.style.display = "none";
+
+        var videoRight = document.getElementById('videoRight');
+        videoRight.style.display = "none";
+
+        var videobutton = document.getElementById('videobutton');
+        videobutton.classList.remove("active");
+
+        var robotButton = document.getElementById('robotButton');
+        robotButton.classList.add("active");
+
+
+    }
+
+    function publicSafe() {
+        console.log(123);
+        var Map_div = document.getElementById('Map');
+        //Map_div.style.height = '58%';
+        Map_div.style.display = "none";
+
+        var ketisi = document.getElementById('ketisi');
+        // Map_div.style.height = '58%';
+        ketisi.style.display = "";
+        var map_div = document.getElementById('subwayContainer');
+        map_div.style.marginTop = '1.5%';
+        var block1 = document.getElementById('block1');
+        block1.style.height = '28%';
+        <!--
+    block1.style.visibility = "";
+    -->
+        <!-- $('#block2').remove();  -->
+        $('.arightboxmid').remove();
+
+        $('.arightboxbott').remove();
+
+        $('.arightboxtop').height("53%");
+        $('.amiddboxtbott2content').height("100%");
+        $('.amiddboxtbott2content').css("marginTop", "1%");
+
+        //公共安全部分修改框图  温度
+        var flag01 = document.getElementById('flag01');
+        flag01.style.visibility = "";
+        var averagewendu = document.getElementById('averageWendu');
+        averagewendu.style.visibility = "";
+        var wendu = document.getElementById('wendu');
+        wendu.style.visibility = "";
+
+        //在环境监测中，把下方框图改成整体长框
+        var gas = document.getElementById('gas');
+        gas.style.display = "none";
+
+        //公共安全部分修改框图  湿度
+        var flag02 = document.getElementById('flag02');
+        flag02.style.visibility = "";
+        var averageshidu = document.getElementById('averageShidu');
+        averageshidu.style.visibility = "";
+        var shidu = document.getElementById('shidu');
+        shidu.style.visibility = "";
+
+        //修改左下框图高度
+        var left = document.getElementById('left');
+        left.style.display = "";
+        left.style.height = "40%";
+
+        //左下告警信息框不显示
+        var ketier = document.getElementById('ketier');
+        ketier.style.display = "none";
+
+
+        var aleftboxtmidd = document.getElementById('aleftboxtmidd');
+        aleftboxtmidd.style.display = '';
+
+        <!-- block 2是气体监测和有害浓度气体监测这两个框 这里是调整位置及大小 -->
+        var block2 = document.getElementById('block2');
+        block2.style.height = '34%';
+        style = "visibility: hidden"
+        block2.style.width = '89%';
+        block2.style.marginLeft = '100%';
+        block2.style.marginTop = '-31%';
+        block2.style.visibility = "";
+        <!-- flag03 是气体监测这行 -->
+        var flag03 = document.getElementById('flag03');
+        flag03.style.marginTop = '0%';
+        flag03.style.height = '20%';
+
+        <!-- 改变气体监测里面的内容  -->
+        var averageQiya = document.getElementById('averageQiya');
+        averageQiya.style.height = '';
+        averageQiya.style.marginTop = '-8%';
+        averageQiya.style.width = '100%';
+        averageQiya.style.marginLeft = '5%';
+
+
+        <!--  youhaiqiti 这个是新加的id 用来表示有害气体这个框 实现从父div 删除这个子div -->
+        var youhaiqiti = document.getElementById('youhaiqiti');
+        youhaiqiti.parentNode.removeChild(youhaiqiti);
+        // var youhaiqiti = document.getElementById('youhaiqiti');
+        // youhaiqiti.parentNode.removeChild(youhaiqiti);
+
+        activeUpdate(2)
+        document.getElementById("flag01").innerHTML = "温度监测";
+        <!-- FlowPercent(); -->
+        document.getElementById("flag02").innerHTML = "湿度监测";
+        <!-- FlowTotal(); -->
+
+    }
+
+    function gasLeakage() {
+        var Map_div = document.getElementById('Map');
+        Map_div.style.height = '52%';
+        var map_div = document.getElementById('subwayContainer');
+        map_div.style.marginTop = '1.5%';
+        var block1 = document.getElementById('block1');
+        block1.style.height = '34%';
+        $('#block2').remove();
+        $('#DianliangOut').remove();
+        activeUpdate(3);
+        document.getElementById("flag01").innerHTML = "气压监测(近24h)";
+        AtmospherePressure();
+        document.getElementById("flag02").innerHTML = "有害气体浓度监测(近24h)";
+        NoxiousGas();
+    }
+
+    function activeUpdate(num) {
+        var p = document.getElementById("idx").children;
+        for (var i = 0; i < p.length; i++) {
+            p[i].classList.remove("active");
+        }
+        p[num].classList.add("active");
+    }
+
+
+</script>
+</body>
+</html>

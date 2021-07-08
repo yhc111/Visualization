@@ -1,0 +1,2075 @@
+<!doctype html>
+<head>
+    <meta charset="utf-8">
+    <title>城市轨道交通感知与综合应用平台</title>
+    <link href="/visualization/css/styleZhandian.css"  rel="stylesheet" type="text/css" media="all" />
+    <script src="visualization/js/jquery-3.2.0.min.js"></script>
+    <script src="/visualization/js/echarts.min.js" charset="utf-8"></script>
+    <script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+    <script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.93/dist/mapvgl.min.js"></script>
+    <script type="text/javascript">
+
+        function loadScript() {
+            var script1 = document.createElement("script");
+            script1.src = "https://api.map.baidu.com/api?v=1.0&type=webgl&ak=vKRbqmmytWCcPk3pXaXZ5wo5gXLaaGZm&callback=initialize";
+            document.body.appendChild(script1);
+        }
+
+        window.onload = loadScript;
+    </script>
+    <!--<script type="text/javascript" src="https://api.map.baidu.com/api?type=subway&v=1.0&ak=aMhHZ7SSZxh1kTuIoGaQyETsPRiNtf51"></script>-->
+    <style type="text/css">
+        #subwayContainer{width:92%; height:80%; margin-left: 4%; margin-top: 0%;}
+        .BMap_cpyCtrl {
+            display: none;
+        }
+        .anchorBL {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+<div class="bnt">
+    <div class="topbnt_left fl">
+        <ul id="idx"><li><a href="/visualization">返回</a></li>
+            <!--            <li class="active"><a href="#" onclick="environment()">环境监测</a></li>-->
+            <li class="active"><a href="/xinjiamiao">环境监测</a></li>
+            <li><a href="#" onclick="publicSafe()">公共安全</a></li>
+            <!--            <li><a href="#" onclick="gasLeakage()">异常事件</a></li>-->
+        </ul>
+    </div>
+    <h1 class="tith1 fl">城市轨道交通感知与综合应用平台</h1>
+    <div class=" fr topbnt_right">
+        <ul>
+            <li><a href="/visualization2">历史数据统计</a></li>
+            <li><a class="click_pop" id="click_pop" href="#">授权接入</a></li>
+        </ul>
+    </div>
+</div>
+<!-- bnt end -->
+<div class="left1">
+    <div class="aleftboxttop"><h2 class="tith2">当前站点与时间</h2>
+        <div class="lefttoday_tit" style=" height:8%"><p class="fl" id="zhandianleixing">地下站</p><p class="fr"></p></div>
+        <div class="lefttoday_number">
+            <div class="timeAndWeather">
+                <div class="data" id="currentDate">
+                    <p id="stationName" style="margin-top: 5%">延兴门站</p>
+                    <p id="date" style="margin-top:5%; font-size: 20px"></p>
+                    <p id="week" style="font-size: 20px"></p>
+                    <p class="time" id="time" style="margin-top:5%; font-size: 20px"></p>
+                </div>
+            </div>
+        </div>
+        <!-- lefttoday_number end -->
+    </div>
+    <div class="aleftboxtmidd">
+        <h2 class="tith2">站点实时平均温湿度</h2>
+        <div  class="puleftboxtbott3 fr" >
+            <div class="widget-inline-box text-center " style="float: left">
+                <br>
+                <p style="font-size: 20px">当前平均温度</p>
+                <h3 class=" ceeb1fd" id="currentWendu" style="font-size: 30px"></h3>
+                <!--<h4 class="text-muted ">较24h前<img src="img/icondown.png" height="16" />1</h4>-->
+            </div>
+            <div class="widget-inline-box text-center " style="float: left">
+                <p style="font-size: 20px">当前平均湿度</p>
+                <h3 class=" c24c9ff" id="currentShidu" style="font-size: 30px"></h3>
+                <!--<h4 class="text-muted ">较24h前<img src="img/iconup.png" height="16" />3</h4>-->
+            </div>
+        </div>
+    </div>
+    <div class="plefttoday"><h2 class="tith2">传感器设备在线统计</h2>
+        <div class="lefttoday_number1">
+            <div class="widget-inline-box text-center fl" style="margin-top: 15%">
+                <p style="font-size: 15px">传感器感知节点数</p>
+                <h3 id="snesorNum" class="ceeb1fd" style="font-size: 30px; margin-top: 5%">0</h3>
+                <!--                <h4 class="text-muted">环比<img src="img/iconup.png" height="16" />2%</h4>-->
+            </div>
+            <div class="widget-inline-box text-center fl" style="margin-top: 15%">
+                <p style="font-size: 15px">非传感器感知节点数</p>
+                <h3 id="noneSnesorNum" class="c24c9ff" style="font-size: 30px; margin-top: 5%">0</h3>
+                <!--                <h4 class="text-muted">环比<img src="img/icondown.png" height="16" />3%</h4>-->
+            </div>
+            <div class="widget-inline-box text-center fl" style="margin-top: 5%">
+                <p style="font-size: 15px">机器人感知节点数</p>
+                <h3 id="robotNum" class="cffff00" style="font-size: 30px; margin-top: 5%">0</h3>
+                <!--                <h4 class="text-muted">环比<img src="img/icondown.png" height="16" />3%</h4>-->
+            </div>
+            <div class="widget-inline-box text-center fl" style="margin-top: 5%">
+                <p style="font-size: 15px">异常事件监测节点数</p>
+                <h3 id="abnormalNum" class="c11e2dd" style="font-size: 30px; margin-top: 5%">0</h3>
+                <!--                <h4 class="text-muted">环比<img src="img/icondown.png" height="16" />3%</h4>-->
+            </div>
+        </div>
+        <!-- lefttoday_number end -->
+        <!--  lefttoday_bar end-->
+    </div>
+    <!--    <div class="aleftboxtbott">-->
+    <!--        <h2 class="tith2">站级服务器运行状态(近1h)</h2>-->
+    <!--        <div id="CPURAMROM" class="purightboxtopcont"></div>-->
+    <!--    </div>-->
+</div>
+<!--  left1 end -->
+<div class="mrbox">
+    <div class="mrbox_topmidd" style="width: 69%;">
+        <div id="Map" class="amiddboxttop">
+            <h2 class="tith2 pt1">&nbsp;&nbsp;&nbsp;&nbsp;
+                西安市地铁站点分布图
+                <select onchange="window.location=this.value">
+                    <option value="/visualization">总览</option>
+                    <option value="/shijiajie">石家街</option>
+                    <option value="/xinjiamiao">延兴门</option>
+                    <option value="/qinglongsi">广泰门</option>
+                    <option value="/taohuatan">桃花潭</option>
+                    <option value="/chanbazhongxin">浐灞中心</option>
+                </select>
+            </h2>
+            <div id="subwayContainer"><iframe width="750px" height="400px" src="http://192.168.52.128:5000/"></iframe></div>
+        </div>
+        <!--  amiddboxttop end-->
+        <div id="block1" class="amidd_bott">
+            <div class="amiddboxtbott1 fl" >
+                <h2 id="flag01" class="tith2 pt1">温度监测</h2>
+                <div id="averageWendu" class="amiddboxtbott2content" ></div>
+            </div>
+            <div class="amiddboxtbott2 fl"><h2 id="flag02" class="tith2 pt1">湿度监测</h2>
+                <div id="averageShidu" class="amiddboxtbott2content"></div>
+            </div>
+        </div>
+        <div id="block2" class="amidd_bott">
+            <div class="amiddboxtbott1 fl" >
+                <h2 id="flag03" class="tith2 pt1">气压监测</h2>
+                <div id="averageQiya" class="amiddboxtbott2content" ></div>
+            </div>
+            <div class="amiddboxtbott2 fl"><h2 id="flag04" class="tith2 pt1">有害气体浓度监测(近24h)</h2>
+                <div id="harmfulGas" class="amiddboxtbott2content"></div>
+            </div>
+        </div>
+    </div>
+    <!-- mrbox_top end -->
+    <div class="mrbox_top_right">
+        <div class="arightboxtop"><h2 class="tith2">紧急异常事件提醒</h2>
+            <div class="lefttoday_tit"><p class="fl">状态：待解决</p><p class="fr"></p></div>
+            <div class="left2_table">
+                <ul>
+                    <li>
+                        <p class="fl"><b>西安市轨道交通</b><br>
+                            事件一<br>
+                        </p>
+                        <p class="fr pt17">2020-12-16</p>
+                    </li>
+                    <li class="bg">
+                        <p class="fl"><b>西安市轨道交通</b><br>
+                            事件二<br>
+                        </p>
+                        <p class="fr pt17">2020-12-16</p>
+                    </li>
+                    <li>
+                        <p class="fl"><b>西安市轨道交通</b><br>
+                            事件三<br>
+                        </p>
+                        <p class="fr pt17">2020-12-16</p>
+                    </li>
+                </ul>
+            </div>
+        </div>
+        <div class="arightboxmid"><h2 class="tith2">实时电量电压监测</h2>
+            <div id="dianliang" class="amiddboxtbott2content02" style="background: rgba(1,202,217,.2)"></div>
+            <div id="dianya" class="amiddboxtbott2content02" style="background: rgba(1,202,217,.2)"></div>
+        </div>
+        <div class="arightboxbott"><h2 class="tith2 ">当前异常事件统计(近24h)</h2>
+            <div id="yichangzhanbi" class="pleftbox2topcont"></div>
+        </div>
+    </div>
+    <!-- mrbox_top_right end -->
+</div>
+
+<!--遮罩层-->
+<div class="bgPop"></div>
+<!--弹出框-->
+<div class="pop">
+    <div class="pop-top" style="text-align: center">
+        授权接入
+        <span class="pop-close">Ｘ</span>
+    </div>
+    <div class="pop-content">
+        <table class="panel-table" bordercolor="#deefff" border="1">
+            <thead bgcolor="#971212" align="center" >
+            <tr height="50">
+                <th>传感器ID</th>
+                <th>传感器信息</th>
+                <th>备注</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr height="50" class="aaa" style="font-size: 16px;" align="center" >
+                <td>10000001</td>
+                <td>传感器描述</td>
+                <td></td>
+            </tr>
+            <tr height="50" class="aaa" style="font-size: 16px;" align="center" >
+                <td>10000002</td>
+                <td>传感器描述</td>
+                <td></td>
+            </tr>
+            <tr height="50" class="aaa" style="font-size: 16px;" align="center" >
+                <td>10000003</td>
+                <td>传感器描述</td>
+                <td></td>
+            </tr>
+
+            <tr height="50" class="aaa" style="font-size: 16px;" align="center" >
+                <td>10000004</td>
+                <td>传感器描述</td>
+                <td></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+    <div class="pop-foot">
+        <input type="button" value="确定" class="pop-cancel pop-close pop-commit">
+    </div>
+</div>
+
+</div>
+</div>
+
+<script type="text/javascript">
+    var btns = -1;
+
+    function writeCurrentDate() {
+        var now = new Date();
+        var year = now.getFullYear(); //得到年份
+        var month = now.getMonth();//得到月份
+        var date = now.getDate();//得到日期
+        var day = now.getDay();//得到周几
+        var hour = now.getHours();//得到小时
+        var minu = now.getMinutes();//得到分钟
+        var sec = now.getSeconds();//得到秒
+        var MS = now.getMilliseconds();//获取毫秒
+        var week;
+        month = month + 1;
+        if (month < 10) month = "0" + month;
+        if (date < 10) date = "0" + date;
+        if (hour < 10) hour = "0" + hour;
+        if (minu < 10) minu = "0" + minu;
+        if (sec < 10) sec = "0" + sec;
+        if (MS < 100) MS = "0" + MS;
+        var arr_week = new Array("星期日", "星期一", "星期二", "星期三", "星期四", "星期五", "星期六");
+        week = arr_week[day];
+        var time = "";
+        var date1 = "";
+        var week1 = "";
+        time = hour + ":" + minu + ":" + sec;
+        date1 = year + "年" + month + "月" + date + "日";
+        week1 = week;
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        $("#time").html(time);
+        $("#date").html(date1);
+        $("#week").html(week1);
+    };
+    //设置得到当前日期的函数的执行间隔时间，每1000毫秒刷新一次。
+    setInterval(writeCurrentDate, 1000);
+
+    function FlowTotal() {
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        var Ago = [];
+        for (var i = 0; i < 60; i++){
+            var ago = new Date(now.setMinutes(now.getMinutes() - 1));
+            Ago[i] = i;
+        }
+
+        var myChart = echarts.init(document.getElementById('averageShidu'));
+        myChart.clear();
+        option = {
+            color:['#00ffff','#7fd7b1', '#5578cf', '#5ebbeb', '#d16ad8','#f8e19a',  '#00b7ee', '#81dabe','#5fc5ce'],
+            backgroundColor: 'rgba(1,202,217,.2)',
+
+            grid: {
+                left: '5%',
+                right: '8%',
+                bottom: '7%',
+                top:'8%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel:{
+                    color:"rgba(255,255,255,.7)"
+                },
+                data: Ago
+            },
+            yAxis: {
+                type: 'value',
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel:{
+                    color:"rgba(255,255,255,.7)"
+                },
+            },
+            series: [
+                {
+                    name:'人流量',
+                    type:'line',
+                    stack: '总量',
+                    areaStyle: {normal: {}},
+                    data:[10086, 11769, 19064, 13422, 18085, 16677, 19579, 19733, 16623, 10440, 14649, 17251, 16551, 10276, 17284, 19947, 16120, 19465, 18781, 14772, 12103, 15396, 14944, 10730, 12478, 13894, 19590, 13624, 11736, 13982, 18139, 16085, 13206, 11977, 11830, 13156, 16106, 11693, 16203, 13181, 10082, 13137, 13524, 15362, 11183, 18641, 17832, 11476, 10732, 14009, 15028, 10111, 10646, 19269, 10487, 19338, 18331, 17927, 17683, 14946]
+                }
+
+            ]
+        };
+        myChart.setOption(option);
+    }
+
+    var url1 = "http://10.70.163.90:8089/currentData";
+    var flag_init_1 = true;
+    var flag_init_2 = true;
+    var flag_init_3 = true;
+    var flag_init_4 = true;
+    function oneMinute() {
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        //获取小时+分钟
+        // var test = new Date("December 25, 1995 23:00:00");
+        // var testminu = test.getMinutes()-1;
+        // var a = new Date(test.setMinutes(testminu));
+        // alert(a.getMinutes());
+        var hour = now.getHours(); //得到小时
+        var minu = now.getMinutes(); //得到分钟
+        var sec = now.getSeconds(); //得到秒
+        var minuAgo = now.getMinutes() - 1;
+        var currentTime1 = "";
+        var currentTime2 = "";
+        if (minuAgo == -1){
+            minuAgo = 59;
+            var hourAgo = hour - 1;
+            if (hourAgo == -1){hourAgo = 23;}
+            if (hour < 10) hour = "0" + hour;
+            if (minu < 10) minu = "0" + minu;
+            if (sec < 10) sec = "0" + sec;
+            if (minuAgo < 10) minuAgo = "0" + minuAgo;
+            currentTime1 = hour + ":" + minu + ":" + sec;
+            currentTime2 = hourAgo + ":" + minuAgo + ":" + sec;
+        } else {
+            if (hour < 10) hour = "0" + hour;
+            if (minu < 10) minu = "0" + minu;
+            if (sec < 10) sec = "0" + sec;
+            if (minuAgo < 10) minuAgo = "0" + minuAgo;
+            currentTime1 = hour + ":" + minu + ":" + sec;
+            currentTime2 = hour + ":" + minuAgo + ":" + sec;
+        }
+        var Ago = [];
+        Ago[0] = currentTime2;
+        for (var i = 1; i < 59; i++){
+            Ago[i] = 0;
+        }
+        Ago[59] = currentTime1;
+        return {
+            timeAxis: Ago,
+            currentSec: sec
+        }
+    }
+
+    // function oneMinute() {
+    //     var now = new Date();
+    //     //当前日期赋值给当前日期输入框中（jQuery easyUI）
+    //     //获取小时+分钟
+    //     // var test = new Date("December 25, 1995 23:00:00");
+    //     // var testminu = test.getMinutes()-1;
+    //     // var a = new Date(test.setMinutes(testminu));
+    //     // alert(a.getMinutes());
+    //     var hour = now.getHours(); //得到小时
+    //     var minu = now.getMinutes(); //得到分钟
+    //     var sec = now.getSeconds(); //得到秒
+    //     var minuAgo = now.getMinutes() - 1;
+    //     var currentTime1 = "";
+    //     var currentTime2 = "";
+    //     if (minuAgo == -1){
+    //         minuAgo = 59;
+    //         var hourAgo = hour - 1;
+    //         if (hourAgo == -1){hourAgo = 23;}
+    //         if (hour < 10) hour = "0" + hour;
+    //         if (minu < 10) minu = "0" + minu;
+    //         if (minuAgo < 10) minuAgo = "0" + minuAgo;
+    //         currentTime1 = hour + ":" + minu;
+    //         currentTime2 = hourAgo + ":" + minuAgo;
+    //     } else {
+    //         if (hour < 10) hour = "0" + hour;
+    //         if (minu < 10) minu = "0" + minu;
+    //         if (minuAgo < 10) minuAgo = "0" + minuAgo;
+    //         currentTime1 = hour + ":" + minu + ":" + sec;
+    //         currentTime2 = hour + ":" + minuAgo + ":" + sec;
+    //     }
+    //     var Ago = [];
+    //     Ago[0] = currentTime2;
+    //     var sec_var1 = currentTime2 + 12;
+    //     var sec_var2 = currentTime2 + 24;
+    //     var sec_var3 = currentTime2 + 36;
+    //     var sec_var4 = currentTime2 + 48;
+    //     if (sec >= 48){
+    //         sec_var1 = sec_var1 % 60;
+    //         Ago[14] = hour + ":" + minuAgo + ":" + sec_var1;
+    //
+    //         Ago[28] = hour + ":" + minuAgo + ":" + (sec+12);
+    //         Ago[42] = hour + ":" + minuAgo + ":" + (sec+12);
+    //     }
+    //     // var j = 1;
+    //     // for (var i = sec+1; i < 60; i++){
+    //     //     Ago[j] = hour + ":" + minuAgo + ":" + i;
+    //     //     j++;
+    //     // }
+    //     // for (var i = 0; i < sec; i++){
+    //     //     Ago[j] = hour + ":" + minu + ":" + i;
+    //     // }
+    //     Ago[56] = currentTime1;
+    //     return {
+    //         timeAxis: Ago,
+    //         currentSec: sec
+    //     }
+    // }
+
+    function WenDu(btns) {
+        //动态更新数据
+        var Ago = [];
+        //温感01、02、03、04、05
+        var data01 = [];
+        var data02 = [];
+        var data03 = [];
+        var data04 = [];
+        var data05 = [];
+        var dataSingle = [];
+        var Sec = 0;
+        var tem1up = 30;
+        var tem1down = 10;
+        function addData(newData01, newData02, newData03, newData04, newData05) {
+            if (flag_init_1 == true){
+                Ago = oneMinute().timeAxis;
+                Sec = oneMinute().currentSec;
+                for (var i = 0; i < 59; i++){
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                }
+                if (data01.length < 60){
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                } else {
+                    data01.shift();
+                    data02.shift();
+                    data03.shift();
+                    data04.shift();
+                    data05.shift();
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                }
+                flag_init_1 = false;
+            } else {
+                Ago = oneMinute().timeAxis;
+                Sec = oneMinute().currentSec;
+                if (data01.length < 60){
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                } else {
+                    data01.shift();
+                    data02.shift();
+                    data03.shift();
+                    data04.shift();
+                    data05.shift();
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                }
+            }
+        }
+
+        function addDataSingle(singleData) {
+            if (flag_init_1 == true){
+                Ago = oneMinute().timeAxis;
+                Sec = oneMinute().currentSec;
+                for (var i = 0; i < 59; i++){
+                    dataSingle.push(singleData);
+                }
+                if (dataSingle.length < 60){
+                    dataSingle.push(singleData);
+                } else {
+                    dataSingle.shift();
+                    dataSingle.push(singleData);
+                }
+                flag_init_1 = false;
+            } else {
+                Ago = oneMinute().timeAxis;
+                Sec = oneMinute().currentSec;
+                if (dataSingle.length < 60){
+                    dataSingle.push(singleData);
+                } else {
+                    dataSingle.shift();
+                    dataSingle.push(singleData);
+                }
+            }
+        }
+
+        var myChart = echarts.init(document.getElementById('averageWendu'));
+        myChart.clear();
+        option = {
+            color:['#E2DAC7','#F99851', '#FCEF03', '#47B971', '#EE1F93','#666666',  '#03ADE8', '#F4808D','#000000'],
+            backgroundColor: 'rgba(1,202,217,.2)',
+            grid: {
+                left: '2%',
+                right: '5%',
+                bottom: '2%',
+                top:'16%',
+                containLabel: true,
+                data:['温感01','温感02','温感03','温感04','温感05','温度警示线']
+            },
+            animation: false,
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                top:5,
+                textStyle:{
+                    fontSize: 10,
+                    color:'rgba(255,255,255,.7)'
+                },
+                data:['温感01','温感02','温感03','温感04','温感05','温度警示线']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    axisLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.2)'
+                        },
+                    },
+                    splitLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.1)'
+                        }
+                    },
+                    axisLabel:{
+                        color:"rgba(255,255,255,.7)",
+                        interval: 58
+                    },
+
+                    data: Ago,
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '',
+                    // min: 0,
+                    // max: 40,
+                    // interval: 5,
+                    scale:true,
+                    axisLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.3)'
+                        }
+                    },
+                    splitLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.01)'
+                        }
+                    },
+
+                    axisLabel: {
+                        formatter: '{value} °C'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name:'温感01',
+                    type:'line',
+                    stack: '温感01',
+                    //symbol : "none",
+                    data:data01
+                },
+                {
+                    name:'温感02',
+                    type:'line',
+                    stack: '温感02',
+                    //symbol : "none",
+                    data:data02
+                },
+                {
+                    name:'温感03',
+                    type:'line',
+                    stack: '温感03',
+                    //symbol : "none",
+                    data:data03
+                },
+                {
+                    name:'温感04',
+                    type:'line',
+                    stack: '温感04',
+                    //symbol : "none",
+                    data:data04
+                },
+                {
+                    name:'温感05',
+                    type:'line',
+                    stack: '温感05',
+                    //symbol : "none",
+                    data: data05
+                },
+                {
+                    name:'温度警示线',
+                    type:'line',
+                    stack: '温度警示线1',
+                    symbol : "none",
+                    data:[tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,
+                        tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,
+                        tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,
+                        tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,
+                        tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,
+                        tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up,tem1up]
+                },
+                {
+                    name:'温度警示线',
+                    type:'line',
+                    stack: '温度警示线2',
+                    symbol : "none",
+                    data:[tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,
+                        tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,
+                        tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,
+                        tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,
+                        tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,
+                        tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down,tem1down]
+                },
+            ],
+
+            tooltip : {
+                axisPointer : {
+                    label : {
+                        backgroundColor : '#6a7985'
+                    }
+                },
+                formatter : "{a} : {c}℃"
+            }
+        };
+        myChart.setOption(option);
+        setInterval(function () {
+            // if (btns != null){
+            //     var str = "temperature0" + btns%1000000;
+            //     var str2 = "温感0" + btns%1000000;
+            //     $.ajax({
+            //         //请求方式
+            //         type : "POST",
+            //         //请求媒体类型
+            //         contentType: "application/json;charset=UTF-8",
+            //         //数据，json字符串
+            //         data : JSON.stringify({"dataType":"temperature"}),
+            //         dataType:"json",
+            //         //请求地址
+            //         url : url1,
+            //         //请求成功
+            //         success : function(result) {
+            //             $("#currentWendu").html(result.temperature01.toFixed(2) + "℃");
+            //             $("#snesorNum").html(result.sensorNum.toFixed(0));
+            //             addDataSingle(result[str]);
+            //             myChart.setOption({
+            //                 xAxis: {
+            //                     data: Ago
+            //                 },
+            //                 series: [
+            //                     {
+            //                         name: '温感01',
+            //                         data: data01
+            //                     },
+            //                 ]
+            //             });
+            //         },
+            //         //请求失败，包含具体的错误信息
+            //         error : function(e){
+            //             console.log(e.status);
+            //             console.log(e.responseText);
+            //         }
+            //     });
+            // } else {
+            $.ajax({
+                //请求方式
+                type : "POST",
+                //请求媒体类型
+                contentType: "application/json;charset=UTF-8",
+                //数据，json字符串
+                data : JSON.stringify({"dataType":"temperature"}),
+                dataType:"json",
+                //请求地址
+                url : url1,
+                //请求成功
+                success : function(result) {
+                    $("#currentWendu").html(result.temperature01.toFixed(2) + "℃");
+                    $("#snesorNum").html(result.sensorNum.toFixed(0));
+                    addData(result.temperature01, result.temperature02,
+                        result.temperature03, result.temperature04, result.temperature05);
+                    myChart.setOption({
+                        xAxis: {
+                            data: Ago
+                        },
+                        series: [
+                            {
+                                name: '温感01',
+                                data: data01
+                            },
+                            {
+                                name: '温感02',
+                                data: data02
+                            },
+                            {
+                                name: '温感03',
+                                data: data03
+                            },
+                            {
+                                name: '温感04',
+                                data: data04
+                            },
+                            {
+                                name: '温感05',
+                                data: data05
+                            },
+                        ]
+                    });
+                },
+                //请求失败，包含具体的错误信息
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+            //}
+        }, 1000);
+    }
+
+    function ShiDu() {
+        //动态更新数据
+        var Ago = [];
+        //湿感01、02、03、04、05
+        var data01 = [];
+        var data02 = [];
+        var data03 = [];
+        var data04 = [];
+        var data05 = [];
+        var Sec = 0;
+        var humUp = 50;
+        var humDown = 10;
+        function addData(newData01, newData02, newData03, newData04, newData05) {
+            if (flag_init_2 == true){
+                Ago = oneMinute().timeAxis;
+                Sec = oneMinute().currentSec;
+                for (var i = 0; i < 59; i++){
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                }
+                if (data01.length < 60){
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                } else {
+                    data01.shift();
+                    data02.shift();
+                    data03.shift();
+                    data04.shift();
+                    data05.shift();
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                }
+                flag_init_2 = false;
+            } else {
+                Ago = oneMinute().timeAxis;
+                Sec = oneMinute().currentSec;
+                if (data01.length < 60){
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                } else {
+                    data01.shift();
+                    data02.shift();
+                    data03.shift();
+                    data04.shift();
+                    data05.shift();
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                }
+            }
+        }
+
+        var myChart = echarts.init(document.getElementById('averageShidu'));
+        myChart.clear();
+        option = {
+            color:['#8E78C0','#03ADE8', '#F4808D','#000000', '#E2DAC7','#666666', '#FCEF03', '#47B971', '#EE1F93'],
+            backgroundColor: 'rgba(1,202,217,.2)',
+            grid: {
+                left: '2%',
+                right: '5%',
+                bottom: '2%',
+                top:'16%',
+                containLabel: true,
+                data:['湿感01','湿感02','湿感03','湿感04','湿感05','湿度警示线']
+            },
+            animation: false,
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                top:5,
+                textStyle:{
+                    fontSize: 10,
+                    color:'rgba(255,255,255,.7)'
+                },
+                data:['湿感01','湿感02','湿感03','湿感04','湿感05','湿度警示线']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    axisLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.2)'
+                        }
+                    },
+                    splitLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.1)'
+                        }
+                    },
+                    axisLabel:{
+                        color:"rgba(255,255,255,.7)",
+                        interval : 58
+                    },
+
+                    data: Ago,
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '',
+                    // min: 0,
+                    // max: 100,
+                    // interval: 10,
+                    scale:true,
+                    axisLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.3)'
+                        }
+                    },
+                    splitLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.01)'
+                        }
+                    },
+
+                    axisLabel: {
+                        formatter: '{value} %'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name:'湿感01',
+                    type:'line',
+                    stack: '湿感01',
+                    //symbol : "none",
+                    data:data01
+                },
+                {
+                    name:'湿感02',
+                    type:'line',
+                    stack: '湿感02',
+                    //symbol : "none",
+                    data:data02
+                },
+                {
+                    name:'湿感03',
+                    type:'line',
+                    stack: '湿感03',
+                    //symbol : "none",
+                    data:data03
+                },
+                {
+                    name:'湿感04',
+                    type:'line',
+                    stack: '湿感04',
+                    //symbol : "none",
+                    data:data04
+                },
+                {
+                    name:'湿感05',
+                    type:'line',
+                    stack: '湿感05',
+                    //symbol : "none",
+                    data:data05
+                },
+                {
+                    name:'湿度警示线',
+                    type:'line',
+                    stack: '湿度警示线01',
+                    symbol : "none",
+                    data:[humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,
+                        humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,
+                        humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,
+                        humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,
+                        humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,
+                        humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,humUp,]
+                },
+                {
+                    name:'湿度警示线',
+                    type:'line',
+                    stack: '湿度警示线02',
+                    symbol : "none",
+                    data:[humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,
+                        humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,
+                        humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,
+                        humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,
+                        humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,
+                        humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,humDown,]
+                },
+            ],
+            tooltip : {
+                axisPointer : {
+                    label : {
+                        backgroundColor : '#6a7985'
+                    }
+                },
+                formatter : "{a} : {c}%"
+            }
+        };
+        myChart.setOption(option);
+        setInterval(function () {
+            var newData = 0;
+            $.ajax({
+                //请求方式
+                type : "POST",
+                //请求媒体类型
+                contentType: "application/json;charset=UTF-8",
+                //数据，json字符串
+                data : JSON.stringify({"dataType":"humidity"}),
+                dataType:"json",
+                //请求地址
+                url : url1,
+                //请求成功
+                success : function(result) {
+                    $("#currentShidu").html(result.humidity01.toFixed(2) + "%");
+                    $("#snesorNum").html(result.sensorNum.toFixed(0));
+                    addData(result.humidity01, result.humidity02, result.humidity03,
+                        result.humidity04, result.humidity05);
+                    myChart.setOption({
+                        xAxis: {
+                            data: Ago
+                        },
+                        series: [
+                            {
+                                name: '湿感01',
+                                data: data01
+                            },
+                            {
+                                name: '湿感02',
+                                data: data02
+                            },
+                            {
+                                name: '湿感03',
+                                data: data03
+                            },
+                            {
+                                name: '湿感04',
+                                data: data04
+                            },
+                            {
+                                name: '湿感05',
+                                data: data05
+                            },
+                        ]
+                    });
+                },
+                //请求失败，包含具体的错误信息
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }, 1000);
+    }
+
+    function oneMinute_2interval() {
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        //获取小时+分钟
+        // var test = new Date("December 25, 1995 23:00:00");
+        // var testminu = test.getMinutes()-1;
+        // var a = new Date(test.setMinutes(testminu));
+        // alert(a.getMinutes());
+        var hour = now.getHours(); //得到小时
+        var minu = now.getMinutes(); //得到分钟
+        var sec = now.getSeconds(); //得到秒
+        var minuAgo = now.getMinutes() - 1;
+        var currentTime1 = "";
+        var currentTime2 = "";
+        if (minuAgo == -1){
+            minuAgo = 59;
+            var hourAgo = hour - 1;
+            if (hourAgo == -1){hourAgo = 23;}
+            if (hour < 10) hour = "0" + hour;
+            if (minu < 10) minu = "0" + minu;
+            if (minuAgo < 10) minuAgo = "0" + minuAgo;
+            currentTime1 = hour + ":" + minu + ":" + sec;
+            currentTime2 = hourAgo + ":" + minuAgo + ":" + sec;
+        } else {
+            if (hour < 10) hour = "0" + hour;
+            if (minu < 10) minu = "0" + minu;
+            if (minuAgo < 10) minuAgo = "0" + minuAgo;
+            currentTime1 = hour + ":" + minu + ":" + sec;
+            currentTime2 = hour + ":" + minuAgo + ":" + sec;
+        }
+        var Ago = [];
+        Ago[0] = currentTime2;
+        for (var i = 1; i < 29; i++){
+            Ago[i] = 0;
+        }
+        Ago[29] = currentTime1;
+        return {
+            timeAxis: Ago,
+            currentSec: sec
+        }
+    }
+
+    function Yali() {
+        //动态更新数据
+        var Ago = [];
+        //湿感01、02、03、04、05
+        var data01 = [];
+        var data02 = [];
+        var data03 = [];
+        var data04 = [];
+        var data05 = [];
+        var Sec = 0;
+        function addData(newData01, newData02, newData03, newData04, newData05) {
+            if (flag_init_3 == true){
+                Ago = oneMinute_2interval().timeAxis;
+                Sec = oneMinute_2interval().currentSec;
+                for (var i = 0; i < 29; i++){
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                }
+                if (data01.length < 30){
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                } else {
+                    data01.shift();
+                    data02.shift();
+                    data03.shift();
+                    data04.shift();
+                    data05.shift();
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                }
+                flag_init_3 = false;
+            } else {
+                Ago = oneMinute_2interval().timeAxis;
+                Sec = oneMinute_2interval().currentSec;
+                if (data01.length < 30){
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                } else {
+                    data01.shift();
+                    data02.shift();
+                    data03.shift();
+                    data04.shift();
+                    data05.shift();
+                    data01.push(newData01);
+                    data02.push(newData02);
+                    data03.push(newData03);
+                    data04.push(newData04);
+                    data05.push(newData05);
+                }
+            }
+        }
+
+        var myChart = echarts.init(document.getElementById('averageQiya'));
+        myChart.clear();
+        option = {
+            backgroundColor: 'rgba(1,202,217,.2)',
+            grid: {
+                left:60,
+                right:20,
+                top:45,
+                bottom:40
+            },
+            legend: {
+                top:10,
+                textStyle:{
+                    fontSize: 10,
+                    color:'rgba(255,255,255,.7)'
+                },
+                data:['真实气压']
+            },
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            animation: false,
+            xAxis: [
+                {
+                    type: 'category',
+                    axisLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.2)'
+                        }
+                    },
+                    splitLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.1)'
+                        }
+                    },
+                    axisLabel:{
+                        color:"rgba(255,255,255,.7)",
+                        interval : 28
+                    },
+
+                    data: Ago,
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '',
+                    min: 950,
+                    max: 1050,
+                    interval: 25,
+                    // scale:true,
+                    axisLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.3)'
+                        }
+                    },
+                    splitLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.01)'
+                        }
+                    },
+
+                    axisLabel: {
+                        formatter: '{value} hPa'
+                    }
+                }
+            ],
+            tooltip :{
+                formatter : "{c} hPa"
+            },
+            series: [
+                {
+                    name:'真实气压',
+                    type:'bar',
+                    force : {
+                        layoutAnimation : false,
+                    },
+                    itemStyle: {
+                        normal: {
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 0, 1,
+                                [
+                                    {offset: 0, color: '#FD751F'},
+                                    {offset: 1, color: '#02356A'}
+                                ]
+                            )
+                        }
+                    },
+                    data:data01
+                },
+                // {
+                //     name:'标准线',
+                //     type:'line',
+                //     itemStyle: {
+                //         normal: {
+                //             color: new echarts.graphic.LinearGradient(
+                //                 0, 0, 0, 1,
+                //                 [
+                //                     {offset: 0, color: '#fffb34'},
+                //                     {offset: 1, color: '#fffb34'}
+                //                 ]
+                //             )
+                //         }
+                //     },
+                //     data:[101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325,
+                //         101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325, 101.325,]
+                // }
+            ]
+        };
+        myChart.setOption(option);
+        setInterval(function () {
+            var newData = 0;
+            $.ajax({
+                //请求方式
+                type : "POST",
+                //请求媒体类型
+                contentType: "application/json;charset=UTF-8",
+                //数据，json字符串
+                data : JSON.stringify({"dataType":"pressure"}),
+                dataType:"json",
+                //请求地址
+                url : url1,
+                //请求成功
+                success : function(result) {
+                    $("#snesorNum").html(result.sensorNum.toFixed(0));
+                    addData(result.pressure01, result.pressure02, result.pressure03,
+                        result.pressure04, result.pressure05);
+                    myChart.setOption({
+                        xAxis: {
+                            data: Ago
+                        },
+                        series: [
+                            {
+                                name: '真实气压',
+                                data: data01
+                            },
+                        ]
+                    });
+                },
+                //请求失败，包含具体的错误信息
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }, 2000);
+    }
+
+    function NoxiousGas() {
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        var Ago = []
+        for (var i = 0; i < 24; i++){
+            var ago = new Date(now.setHours(now.getHours() - 1));
+            Ago[i] = i;
+        }
+
+        var myChart = echarts.init(document.getElementById('averageShidu'));
+        myChart.clear();
+        option = {
+            color:['#47B971', '#F99851', '#03ADE8', '#FCEF03', '#F4808D', '#EE1F93', '#E2DAC7', '#8E78C0', '#000000'],
+            backgroundColor: 'rgba(1,202,217,.2)',
+            grid: {
+                left: '2%',
+                right: '5%',
+                bottom: '2%',
+                top:'16%',
+                containLabel: true,
+                data:['可燃气体','硫化气体','一氧化碳','甲烷','PM2.5','警戒线']
+            },
+
+            toolbox: {
+                feature: {
+                    dataView: {show: true, readOnly: false},
+                    magicType: {show: true, type: ['line', 'bar']},
+                    restore: {show: true},
+                    saveAsImage: {show: true}
+                }
+            },
+            legend: {
+                top:5,
+                textStyle:{
+                    fontSize: 10,
+                    color:'rgba(255,255,255,.7)'
+                },
+                data:['可燃气体','硫化气体','一氧化碳','甲烷','PM2.5','警戒线']
+            },
+            xAxis: [
+                {
+                    type: 'category',
+                    axisLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.2)'
+                        }
+                    },
+                    splitLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.1)'
+                        }
+                    },
+                    axisLabel:{
+                        color:"rgba(255,255,255,.7)"
+                    },
+
+                    data: Ago,
+                    axisPointer: {
+                        type: 'shadow'
+                    }
+                }
+            ],
+            yAxis: [
+                {
+                    type: 'value',
+                    name: '',
+                    min: 0,
+                    max: 20,
+                    interval: 2,
+                    axisLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.3)'
+                        }
+                    },
+                    splitLine:{
+                        lineStyle:{
+                            color:'rgba(255,255,255,.01)'
+                        }
+                    },
+
+                    axisLabel: {
+                        formatter: '{value} mg/m3'
+                    }
+                }
+            ],
+            series: [
+                {
+                    name:'可燃气体',
+                    type:'line',
+                    stack: '可燃气体',
+                    data:[1.53, 1.29, 2.28, 0.52, 0.43, 0.05, 0.28, 1.86, 0.48, 2.33, 1.12, 2.77, 1.74, 0.82, 2.95, 0.69, 1.13, 2.04, 0.03, 2.87, 2.05, 1.1, 0.16, 2.88]
+                },
+                {
+                    name:'硫化气体',
+                    type:'line',
+                    stack: '硫化气体',
+                    data:[1.05, 1.13, 1.05, 1.67, 0.77, 1.01, 0.78, 0.58, 1.23, 1.66, 1.98, 0.54, 2.63, 0.74, 1.29, 2.22, 1.05, 1.2, 1.72, 2.99, 2.62, 2.39, 2.47, 2.37]
+                },
+                {
+                    name:'一氧化碳',
+                    type:'line',
+                    stack: '一氧化碳',
+                    data:[0.26, 1.56, 1.06, 1.03, 0.39, 2.91, 0.73, 1.92, 0.27, 0.33, 2.92, 2.82, 0.39, 0.95, 2.21, 2.03, 1.32, 0.68, 1.42, 2.13, 1.0, 0.39, 1.68, 2.76]
+                },
+                {
+                    name:'甲烷',
+                    type:'line',
+                    stack: '甲烷',
+                    data:[0.92, 0.17, 0.27, 1.78, 2.93, 2.41, 1.56, 2.69, 1.52, 2.22, 2.12, 2.9, 1.59, 2.43, 2.08, 1.59, 2.74, 1.0, 2.38, 2.93, 2.45, 0.43, 1.56, 1.84]
+                },
+                {
+                    name:'PM2.5',
+                    type:'line',
+                    stack: 'PM2.5',
+                    data:[5.48, 4.79, 5.28, 4.2, 4.06, 5.89, 5.79, 3.12, 5.85, 4.65, 4.44, 4.51, 3.84, 4.83, 4.72, 5.82, 5.58, 5.43, 5.38, 5.61, 4.25, 5.96, 3.19, 4.51]
+                },
+                {
+                    name:'警戒线',
+                    type:'line',
+                    stack: '警戒线',
+                    data:[15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15]
+                },
+            ]
+        };
+        myChart.setOption(option);
+    }
+
+    var now = new Date();
+    //当前日期赋值给当前日期输入框中（jQuery easyUI）
+    var Ago = []
+    for (var i = 0; i < 24; i++){
+        var ago = new Date(now.setHours(now.getHours() - 1));
+        Ago[i] = i;
+    }
+
+    var myChart = echarts.init(document.getElementById('harmfulGas'));
+    myChart.clear();
+    option = {
+        color:['#47B971', '#F99851', '#03ADE8', '#FCEF03', '#F4808D', '#EE1F93', '#E2DAC7', '#8E78C0', '#000000'],
+        backgroundColor: 'rgba(1,202,217,.2)',
+        grid: {
+            left: '2%',
+            right: '5%',
+            bottom: '2%',
+            top:'16%',
+            containLabel: true,
+            data:['可燃气体','硫化气体','一氧化碳','甲烷','PM2.5','警戒线']
+        },
+
+        toolbox: {
+            feature: {
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+        legend: {
+            top:5,
+            textStyle:{
+                fontSize: 10,
+                color:'rgba(255,255,255,.7)'
+            },
+            data:['可燃气体','硫化气体','一氧化碳','甲烷','PM2.5','警戒线']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel:{
+                    color:"rgba(255,255,255,.7)"
+                },
+
+                data: Ago,
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '',
+                min: 0,
+                max: 20,
+                interval: 2,
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.3)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.01)'
+                    }
+                },
+
+                axisLabel: {
+                    formatter: '{value} mg/m3'
+                }
+            }
+        ],
+        series: [
+            {
+                name:'可燃气体',
+                type:'line',
+                stack: '可燃气体',
+                data:[1.53, 1.29, 2.28, 0.52, 0.43, 0.05, 0.28, 1.86, 0.48, 2.33, 1.12, 2.77, 1.74, 0.82, 2.95, 0.69, 1.13, 2.04, 0.03, 2.87, 2.05, 1.1, 0.16, 2.88]
+            },
+            {
+                name:'硫化气体',
+                type:'line',
+                stack: '硫化气体',
+                data:[1.05, 1.13, 1.05, 1.67, 0.77, 1.01, 0.78, 0.58, 1.23, 1.66, 1.98, 0.54, 2.63, 0.74, 1.29, 2.22, 1.05, 1.2, 1.72, 2.99, 2.62, 2.39, 2.47, 2.37]
+            },
+            {
+                name:'一氧化碳',
+                type:'line',
+                stack: '一氧化碳',
+                data:[0.26, 1.56, 1.06, 1.03, 0.39, 2.91, 0.73, 1.92, 0.27, 0.33, 2.92, 2.82, 0.39, 0.95, 2.21, 2.03, 1.32, 0.68, 1.42, 2.13, 1.0, 0.39, 1.68, 2.76]
+            },
+            {
+                name:'甲烷',
+                type:'line',
+                stack: '甲烷',
+                data:[0.92, 0.17, 0.27, 1.78, 2.93, 2.41, 1.56, 2.69, 1.52, 2.22, 2.12, 2.9, 1.59, 2.43, 2.08, 1.59, 2.74, 1.0, 2.38, 2.93, 2.45, 0.43, 1.56, 1.84]
+            },
+            {
+                name:'PM2.5',
+                type:'line',
+                stack: 'PM2.5',
+                data:[5.48, 4.79, 5.28, 4.2, 4.06, 5.89, 5.79, 3.12, 5.85, 4.65, 4.44, 4.51, 3.84, 4.83, 4.72, 5.82, 5.58, 5.43, 5.38, 5.61, 4.25, 5.96, 3.19, 4.51]
+            },
+            {
+                name:'警戒线',
+                type:'line',
+                stack: '警戒线',
+                data:[15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15, 15]
+            },
+        ]
+    };
+    myChart.setOption(option);
+
+    var myChart = echarts.init(document.getElementById('yichangzhanbi'));
+    option = {
+        color:['#E2DAC7','#F99851', '#FCEF03', '#47B971', '#EE1F93','#8E78C0',  '#03ADE8', '#F4808D','#000000'],
+        backgroundColor: 'rgba(1,202,217,.2)',
+        grid: {
+            left:20,
+            right:20,
+            top:0,
+            bottom:20
+        },
+        // legend: {
+        //     top:10,
+        //     textStyle:{
+        //         fontSize: 10,
+        //         color:'rgba(255,255,255,.7)'
+        //     },
+        //     data:['温度','湿度','坍塌','震动','渗水','异物入侵','位移','气压','可燃气体','硫化气体','一氧化碳','甲烷','PM2.5']
+        // },
+        series : [
+            {
+                name: '异常类型',
+                type: 'pie',
+                radius : '55%',
+                center: ['50%', '55%'],
+                data:[
+                    {value:10, name:'温度'},
+                    {value:12, name:'湿度'},
+                    {value:0, name:'坍塌'},
+                    {value:7, name:'震动'},
+                    {value:21, name:'异物入侵'},
+                    {value:1, name:'位移'},
+                    {value:1, name:'气压'},
+                    {value:0, name:'可燃气体'},
+                    {value:0, name:'硫化气体'},
+                    {value:0, name:'一氧化碳'},
+                    {value:0, name:'甲烷'},
+                    {value:4, name:'PM2.5'}
+                ],
+                itemStyle: {
+                    emphasis: {
+                        shadowBlur: 10,
+                        shadowOffsetX: 0,
+                        shadowColor: 'rgba(0, 0, 0, 0.5)'
+                    }
+                }
+            }
+        ]
+    };
+    myChart.setOption(option);
+
+    $(document).ready(function () {
+        $('.pop-close').click(function () {
+            $('.aaa').css("background-color", "#01064A")
+            $('.bgPop,.pop').hide();
+        });
+        $('#click_pop').click(function () {
+            $('.bgPop,.pop').show();
+        });
+    });
+
+    //授权接入的传感器列表点击事件
+    $('.aaa').click(function () {
+        $('.aaa').each(function (key, value) {
+            if($(this).css("background-color") == "rgb(29, 49, 82)"){
+                $(this).css("background-color","#01064A");
+            }
+        });
+        if($(this).css("background-color")=="rgb(29, 49, 82)"){
+            $(this).css("background-color","#01064A")
+        }else if($(this).css("background-color")!="rgb(29, 49, 82)"){
+            $(this).css("background-color", "#1d3152");
+        }
+    })
+
+    $('.pop-commit').click(function () {
+        $('.aaa').each(function (key, value) {
+            if($(this).css("background-color") == "rgb(29, 49, 82)"){
+                btns = $(this).children("td").get(0).innerHTML;
+            }
+        });
+        // WenDu(btns);
+        // ShiDu(btns);
+        // Yali(btns);
+        // DianliangDianya(btns);
+    });
+
+    function DianliangDianya() {
+
+        // 基于准备好的dom，初始化echarts实例
+        var myChart01 = echarts.init(document.getElementById('dianliang'));
+        var myChart02 = echarts.init(document.getElementById('dianya'));
+        option01 = {
+            grid: {   // 直角坐标系内绘图网格
+                left: '10',  //grid 组件离容器左侧的距离,
+                             //left的值可以是80这样具体像素值，
+                //也可以是'80%'这样相对于容器高度的百分比
+                top: '0',
+                right: '65',
+                bottom: '0',
+                containLabel: true   //gid区域是否包含坐标轴的刻度标签。为true的时候，
+                // left/right/top/bottom/width/height决定的是包括了坐标轴标签在内的
+                //所有内容所形成的矩形的位置.常用于【防止标签溢出】的场景
+            },
+            animation: false,
+            xAxis: {  //直角坐标系grid中的x轴,
+                //一般情况下单个grid组件最多只能放上下两个x轴,
+                //多于两个x轴需要通过配置offset属性防止同个位置多个x轴的重叠。
+                type: 'value',//坐标轴类型,分别有：
+                              //'value'-数值轴；'category'-类目轴;
+                              //'time'-时间轴;'log'-对数轴
+                splitLine: {show: false},//坐标轴在 grid 区域中的分隔线
+                axisLabel: {show: false},//坐标轴刻度标签
+                axisTick: {show: false},//坐标轴刻度
+                axisLine: {show: false},//坐标轴轴线
+            },
+            yAxis: {
+                type: 'category',
+                axisTick: {show: false},
+                axisLine: {show: false},
+                axisLabel: {
+                    color: 'white',
+                    fontSize: 12
+                },
+                data: ['电量']//类目数据，在类目轴（type: 'category'）中有效。
+                //如果没有设置 type，但是设置了axis.data,则认为type 是 'category'。
+            },
+            series: [//系列列表。每个系列通过 type 决定自己的图表类型
+                {
+                    name: '%',//系列名称
+                    type: 'bar',//柱状、条形图
+                    barWidth: 19,//柱条的宽度,默认自适应
+                    data: [],//系列中数据内容数组
+                    label: { //图形上的文本标签
+                        show: true,
+                        position: 'right',//标签的位置
+                        offset: [0,-20],  //标签文字的偏移，此处表示向上偏移40
+                        formatter: '{c}{a}',//标签内容格式器 {a}-系列名,{b}-数据名,{c}-数据值
+                        color: 'white',//标签字体颜色
+                        fontSize: 12  //标签字号
+                    },
+                    itemStyle: {//图形样式
+                        normal: {  //normal 图形在默认状态下的样式;
+                            //emphasis图形在高亮状态下的样式
+                            barBorderRadius: 10,//柱条圆角半径,单位px.
+                                                //此处统一设置4个角的圆角大小;
+                            //也可以分开设置[10,10,10,10]顺时针左上、右上、右下、左下
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 1, 0,
+                                [{
+                                    offset: 0,
+                                    color: '#22B6ED'
+                                },
+                                    {
+                                        offset: 1,
+                                        color: '#3FE279'
+                                    }
+                                ]
+                            )
+                        }
+                    },
+                    zlevel:1//柱状图所有图形的 zlevel 值,
+                            //zlevel 大的 Canvas 会放在 zlevel 小的 Canvas 的上面
+                },
+                {
+                    name: '进度条背景',
+                    type: 'bar',
+                    barGap: '-100%',//不同系列的柱间距离，为百分比。
+                    // 在同一坐标系上，此属性会被多个 'bar' 系列共享。
+                    // 此属性应设置于此坐标系中最后一个 'bar' 系列上才会生效，
+                    //并且是对此坐标系中所有 'bar' 系列生效。
+                    barWidth: 19,
+                    data: [100],
+                    color: '#151B87',//柱条颜色
+                    itemStyle: {
+                        normal: {
+                            barBorderRadius: 10
+                        }
+                    }
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart01.setOption(option01);
+        option02 = {
+            grid: {   // 直角坐标系内绘图网格
+                left: '10',  //grid 组件离容器左侧的距离,
+                             //left的值可以是80这样具体像素值，
+                //也可以是'80%'这样相对于容器高度的百分比
+                top: '0',
+                right: '10',
+                bottom: '0',
+                containLabel: true   //gid区域是否包含坐标轴的刻度标签。为true的时候，
+                // left/right/top/bottom/width/height决定的是包括了坐标轴标签在内的
+                //所有内容所形成的矩形的位置.常用于【防止标签溢出】的场景
+            },
+            animation: false,
+            xAxis: {  //直角坐标系grid中的x轴,
+                //一般情况下单个grid组件最多只能放上下两个x轴,
+                //多于两个x轴需要通过配置offset属性防止同个位置多个x轴的重叠。
+                type: 'value',//坐标轴类型,分别有：
+                              //'value'-数值轴；'category'-类目轴;
+                              //'time'-时间轴;'log'-对数轴
+                splitLine: {show: false},//坐标轴在 grid 区域中的分隔线
+                axisLabel: {show: false},//坐标轴刻度标签
+                axisTick: {show: false},//坐标轴刻度
+                axisLine: {show: false},//坐标轴轴线
+            },
+            yAxis: {
+                type: 'category',
+                axisTick: {show: false},
+                axisLine: {show: false},
+                axisLabel: {
+                    color: 'white',
+                    fontSize: 12
+                },
+                data: ['电压']//类目数据，在类目轴（type: 'category'）中有效。
+                //如果没有设置 type，但是设置了axis.data,则认为type 是 'category'。
+            },
+            series: [//系列列表。每个系列通过 type 决定自己的图表类型
+                {
+                    name: 'V',//系列名称
+                    type: 'bar',//柱状、条形图
+                    barWidth: 19,//柱条的宽度,默认自适应
+                    data: [],//系列中数据内容数组
+                    label: { //图形上的文本标签
+                        show: true,
+                        position: 'right',//标签的位置
+                        offset: [0,-20],  //标签文字的偏移，此处表示向上偏移40
+                        formatter: '{c}{a}',//标签内容格式器 {a}-系列名,{b}-数据名,{c}-数据值
+                        color: 'white',//标签字体颜色
+                        fontSize: 12  //标签字号
+                    },
+                    itemStyle: {//图形样式
+                        normal: {  //normal 图形在默认状态下的样式;
+                            //emphasis图形在高亮状态下的样式
+                            barBorderRadius: 10,//柱条圆角半径,单位px.
+                                                //此处统一设置4个角的圆角大小;
+                            //也可以分开设置[10,10,10,10]顺时针左上、右上、右下、左下
+                            color: new echarts.graphic.LinearGradient(
+                                0, 0, 1, 0,
+                                [{
+                                    offset: 0,
+                                    color: '#22B6ED'
+                                },
+                                    {
+                                        offset: 1,
+                                        color: '#3FE279'
+                                    }
+                                ]
+                            )
+                        }
+                    },
+                    zlevel:1//柱状图所有图形的 zlevel 值,
+                            //zlevel 大的 Canvas 会放在 zlevel 小的 Canvas 的上面
+                },
+                {
+                    name: '进度条背景',
+                    type: 'bar',
+                    barGap: '-100%',//不同系列的柱间距离，为百分比。
+                    // 在同一坐标系上，此属性会被多个 'bar' 系列共享。
+                    // 此属性应设置于此坐标系中最后一个 'bar' 系列上才会生效，
+                    //并且是对此坐标系中所有 'bar' 系列生效。
+                    barWidth: 19,
+                    data: [4.1],
+                    color: '#151B87',//柱条颜色
+                    itemStyle: {
+                        normal: {
+                            barBorderRadius: 10
+                        }
+                    }
+                }
+            ]
+        };
+        // 使用刚指定的配置项和数据显示图表。
+        myChart02.setOption(option02);
+        setInterval(function () {
+            $.ajax({
+                //请求方式
+                type : "POST",
+                //请求媒体类型
+                contentType: "application/json;charset=UTF-8",
+                //数据，json字符串
+                data : JSON.stringify({"dataType":"electricity"}),
+                dataType:"json",
+                //请求地址
+                url : url1,
+                //请求成功
+                success : function(result) {
+                    $("#snesorNum").html(result.sensorNum.toFixed(0));
+                    var List = [];
+                    for (var val in result){
+                        if (val != "sensorNum"){
+                            var list = result[val];
+                            List.push(list);
+                        }
+                    }
+                    var electricity = List[1][0];
+                    var voltage = List[1][1];
+                    var voltage_V = voltage/1000;
+                    myChart01.setOption({
+                        xAxis: {
+                            data: Ago
+                        },
+                        yAxis: {
+                            data:["传感器01电量"]
+                        },
+                        series: [
+                            {
+                                name: '%',
+                                data: [electricity]
+                            },
+                        ]
+                    });
+                    myChart02.setOption({
+                        xAxis: {
+                            data: Ago
+                        },
+                        yAxis: {
+                            data:["传感器01电压"]
+                        },
+                        series: [
+                            {
+                                name: 'V',
+                                data: [voltage_V]
+                            },
+                        ]
+                    });
+                },
+                //请求失败，包含具体的错误信息
+                error : function(e){
+                    console.log(e.status);
+                    console.log(e.responseText);
+                }
+            });
+        }, 1000);
+    }
+
+
+
+    function FlowPercent() {
+        var myChart = echarts.init(document.getElementById('averageWendu'));
+        myChart.clear();
+        option = {
+            color: ['#FF6C00', '#9CFF00', '#0078FF', '#FFFF00'],
+            backgroundColor: 'rgba(1,202,217,.2)',
+            grid: {
+                left: 10,
+                right: 40,
+                top: 0,
+                bottom: 0,
+                containLabel: true
+            },
+            calculable: true,
+            series: [
+
+                {
+                    name: '面积模式',
+                    type: 'pie',
+                    radius: [10, 70],
+                    center: ['50%', '50%'],
+                    roseType: 'area',
+                    data: [
+                        { value: 1693, name: 'A口' },
+                        { value: 507, name: 'B口' },
+                        { value: 1215, name: 'C口' },
+                        { value: 1788, name: 'D口' },
+                        { value: 1135, name: 'E口' },
+                        { value: 724, name: 'F口' },
+                    ]
+                }
+            ]
+        };
+        myChart.setOption(option);
+    }
+
+    function FlowTotal() {
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        var Ago = []
+        for (var i = 0; i < 60; i++){
+            var ago = new Date(now.setMinutes(now.getMinutes() - 1));
+            Ago[i] = i;
+        }
+
+        var myChart = echarts.init(document.getElementById('averageShidu'));
+        myChart.clear();
+        option = {
+            color:['#00ffff','#7fd7b1', '#5578cf', '#5ebbeb', '#d16ad8','#f8e19a',  '#00b7ee', '#81dabe','#5fc5ce'],
+            backgroundColor: 'rgba(1,202,217,.2)',
+
+            grid: {
+                left: '5%',
+                right: '8%',
+                bottom: '7%',
+                top:'8%',
+                containLabel: true
+            },
+            toolbox: {
+                feature: {
+                    saveAsImage: {}
+                }
+            },
+            xAxis: {
+                type: 'category',
+                boundaryGap: false,
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel:{
+                    color:"rgba(255,255,255,.7)"
+                },
+                data: Ago
+            },
+            yAxis: {
+                type: 'value',
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel:{
+                    color:"rgba(255,255,255,.7)"
+                },
+            },
+            series: [
+                {
+                    name:'人流量',
+                    type:'line',
+                    stack: '总量',
+                    areaStyle: {normal: {}},
+                    data:[10086, 11769, 19064, 13422, 18085, 16677, 19579, 19733, 16623, 10440, 14649, 17251, 16551, 10276, 17284, 19947, 16120, 19465, 18781, 14772, 12103, 15396, 14944, 10730, 12478, 13894, 19590, 13624, 11736, 13982, 18139, 16085, 13206, 11977, 11830, 13156, 16106, 11693, 16203, 13181, 10082, 13137, 13524, 15362, 11183, 18641, 17832, 11476, 10732, 14009, 15028, 10111, 10646, 19269, 10487, 19338, 18331, 17927, 17683, 14946]
+                }
+
+            ]
+        };
+        myChart.setOption(option);
+    }
+
+    //标识是否是第一次加载
+    WenDu();
+    ShiDu();
+    Yali();
+    DianliangDianya();
+
+    function publicSafe() {
+        var Map_div = document.getElementById('Map')
+        Map_div.style.height = '58%';
+        var map_div = document.getElementById('subwayContainer');
+        map_div.style.marginTop = '1.5%';
+        var block1 = document.getElementById('block1');
+        block1.style.height = '28%';
+        $('#block2').remove();
+        $('.arightboxmid').remove();
+        $('.arightboxtop').height("53%");
+        $('.amiddboxtbott2content').height("100%");
+        $('.amiddboxtbott2content').css("marginTop","1%");
+        activeUpdate(2);
+        document.getElementById("flag01").innerHTML="今日各出口人流量占比";
+        FlowPercent();
+        document.getElementById("flag02").innerHTML="总人流量趋势(近1h)";
+        FlowTotal();
+    }
+    function gasLeakage() {
+        var Map_div = document.getElementById('Map');
+        Map_div.style.height = '52%';
+        var map_div = document.getElementById('subwayContainer');
+        map_div.style.marginTop = '1.5%';
+        var block1 = document.getElementById('block1');
+        block1.style.height = '34%';
+        $('#block2').remove();
+        $('#DianliangOut').remove();
+        activeUpdate(3);
+        document.getElementById("flag01").innerHTML="气压监测(近24h)";
+        AtmospherePressure();
+        document.getElementById("flag02").innerHTML="有害气体浓度监测(近24h)";
+        NoxiousGas();
+    }
+    function activeUpdate(num) {
+        var p = document.getElementById("idx").children;
+        for (var i = 0; i < p.length; i++){
+            p[i].classList.remove("active");
+        }
+        p[num].classList.add("active");
+    }
+
+
+</script>
+</body>
+</html>

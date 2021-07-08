@@ -1,0 +1,28 @@
+2020-12-15 19:59:04.894  INFO 49796 --- [restartedMain] com.ShawnYin.WSP.WspApplication          : Starting WspApplication on DESKTOP-38HVG03 with PID 49796 (F:\ketiwu\visualization\target\classes started by Shawn Yin in F:\ketiwu\visualization)
+2020-12-15 19:59:04.897  INFO 49796 --- [restartedMain] com.ShawnYin.WSP.WspApplication          : The following profiles are active: dev
+2020-12-15 19:59:04.962  INFO 49796 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-12-15 19:59:04.962  INFO 49796 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-12-15 19:59:06.233  INFO 49796 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8089 (http)
+2020-12-15 19:59:06.241  INFO 49796 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-12-15 19:59:06.242  INFO 49796 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.30]
+2020-12-15 19:59:06.317  INFO 49796 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-12-15 19:59:06.318  INFO 49796 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1355 ms
+2020-12-15 19:59:06.816  INFO 49796 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-12-15 19:59:07.001  INFO 49796 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2020-12-15 19:59:07.038  INFO 49796 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-12-15 19:59:07.086  INFO 49796 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8089 (http) with context path ''
+2020-12-15 19:59:07.089  INFO 49796 --- [restartedMain] com.ShawnYin.WSP.WspApplication          : Started WspApplication in 2.756 seconds (JVM running for 4.599)
+2020-12-15 20:00:04.041  INFO 32016 --- [restartedMain] com.ShawnYin.WSP.WspApplication          : Starting WspApplication on DESKTOP-38HVG03 with PID 32016 (F:\ketiwu\visualization\target\classes started by Shawn Yin in F:\ketiwu\visualization)
+2020-12-15 20:00:04.044  INFO 32016 --- [restartedMain] com.ShawnYin.WSP.WspApplication          : The following profiles are active: dev
+2020-12-15 20:00:04.235  INFO 32016 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : Devtools property defaults active! Set 'spring.devtools.add-properties' to 'false' to disable
+2020-12-15 20:00:04.237  INFO 32016 --- [restartedMain] .e.DevToolsPropertyDefaultsPostProcessor : For additional web related logging consider setting the 'logging.level.web' property to 'DEBUG'
+2020-12-15 20:00:05.605  INFO 32016 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat initialized with port(s): 8089 (http)
+2020-12-15 20:00:05.613  INFO 32016 --- [restartedMain] o.apache.catalina.core.StandardService   : Starting service [Tomcat]
+2020-12-15 20:00:05.613  INFO 32016 --- [restartedMain] org.apache.catalina.core.StandardEngine  : Starting Servlet engine: [Apache Tomcat/9.0.30]
+2020-12-15 20:00:05.698  INFO 32016 --- [restartedMain] o.a.c.c.C.[Tomcat].[localhost].[/]       : Initializing Spring embedded WebApplicationContext
+2020-12-15 20:00:05.698  INFO 32016 --- [restartedMain] o.s.web.context.ContextLoader            : Root WebApplicationContext: initialization completed in 1461 ms
+2020-12-15 20:00:06.208  INFO 32016 --- [restartedMain] o.s.s.concurrent.ThreadPoolTaskExecutor  : Initializing ExecutorService 'applicationTaskExecutor'
+2020-12-15 20:00:06.407  INFO 32016 --- [restartedMain] o.s.s.c.ThreadPoolTaskScheduler          : Initializing ExecutorService 'taskScheduler'
+2020-12-15 20:00:06.445  INFO 32016 --- [restartedMain] o.s.b.d.a.OptionalLiveReloadServer       : LiveReload server is running on port 35729
+2020-12-15 20:00:06.492  INFO 32016 --- [restartedMain] o.s.b.w.embedded.tomcat.TomcatWebServer  : Tomcat started on port(s): 8089 (http) with context path ''
+2020-12-15 20:00:06.494  INFO 32016 --- [restartedMain] com.ShawnYin.WSP.WspApplication          : Started WspApplication in 2.887 seconds (JVM running for 4.421)

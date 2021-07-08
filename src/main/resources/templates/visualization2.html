@@ -1,0 +1,1585 @@
+<!doctype html>
+<head>
+<meta charset="utf-8">
+<title>城市轨道交通感知与综合应用平台</title>
+<link href="/visualization/css/style.css"  rel="stylesheet" type="text/css" media="all" />
+<script src="/visualization/js/echarts.min.js" charset="utf-8"></script>
+<script src="https://unpkg.com/mapvgl/dist/mapvgl.min.js"></script>
+<script src="https://code.bdstatic.com/npm/mapvgl@1.0.0-beta.93/dist/mapvgl.min.js"></script>
+<script type="text/javascript">
+    function initialize() {
+        // 1. 创建地图实例
+        var bmapgl = new BMapGL.Map('map_container');
+        var point = new BMapGL.Point(108.953471,34.265701);
+        bmapgl.centerAndZoom(point, 14);
+        bmapgl.enableScrollWheelZoom(true);     //开启鼠标滚轮缩放
+        bmapgl.setMapStyleV2({
+            styleId: '9e9a27f4d0e5c6d7863eb8725e1e85bb'
+        });
+        bmapgl.setTilt(60);
+        // 2. 创建MapVGL图层管理器
+        var view = new mapvgl.View({
+            map: bmapgl
+        });
+        // 3. 创建可视化图层，并添加到图层管理器中
+        var layer = new mapvgl.HeatmapLayer({
+            size: 600, // 单个点绘制大小
+            max: 40, // 最大阈值
+            height: 80, // 最大高度，默认为0
+            unit: 'm', // 单位，m:米，px: 像素
+            gradient: { // 对应比例渐变色
+                0.25: 'rgba(0, 0, 255, 1)',
+                0.55: 'rgba(0, 255, 0, 1)',
+                0.85: 'rgba(255, 255, 0, 1)',
+                1: 'rgba(255, 0, 0, 1)'
+            }
+        });
+        view.addLayer(layer);
+        // 4. 准备好规范化坐标数据
+        var data = [];
+        for (var i = 0; i < 2000; i++) {
+            var longitude = Math.random()*(109.08831-108.74796) + 108.74796;
+            var latitude = Math.random()*(34.390105-34.143562) + 34.143562;
+            var number = parseInt(Math.random()*20,10)+1;
+            var item = [longitude,latitude,number];
+            data.push({
+                geometry: {
+                    type: 'Point',
+                    coordinates: [item[0], item[1]]
+                },
+                properties: {
+                    count: item[2]
+                }
+            });
+        }
+        // 5. 关联图层与数据，享受震撼的可视化效果
+        layer.setData(data);
+    }
+
+    function loadScript() {
+        var script1 = document.createElement("script");
+        script1.src = "https://api.map.baidu.com/api?v=1.0&type=webgl&ak=vKRbqmmytWCcPk3pXaXZ5wo5gXLaaGZm&callback=initialize";
+        document.body.appendChild(script1);
+    }
+
+    window.onload = loadScript;
+</script>
+<!--<script type="text/javascript" src="http://api.map.baidu.com/api?type=subway&v=1.0&ak=vKRbqmmytWCcPk3pXaXZ5wo5gXLaaGZm"></script>-->
+<style>
+    .BMap_cpyCtrl {
+        display: none;
+    }
+    .anchorBL {
+        display: none;
+    }
+    #map_container{
+        margin-left: 4%;
+        margin-top: 1%;
+        width: 92%;
+        height: 85%;
+    }
+</style>
+</head>
+
+<body>
+<div class="bnt">
+  <div class="topbnt_left fl">
+   <ul>
+       <li><a href="/visualization">信息总览</a></li>
+   </ul>
+  </div>
+  <h1 class="tith1 fl">城市轨道交通感知与综合应用平台</h1>
+    <div class=" fr topbnt_right">
+        <ul>
+            <li class="active"><a href="/visualization2">历史数据统计</a></li>
+        </ul>
+    </div>
+</div>
+<!-- bnt end -->
+<div class="left1">
+    <div class="aleftboxttop pt1">
+      <h2 class="tith2">温度异常事件近一年数量统计</h2>
+      <div id="lpeftmidbot" class="lpeftmidbotcont"></div>
+    </div>
+    <div class="aleftboxtmidd">
+      <h2 class="tith2 pt2">湿度异常事件近一年数量统计</h2>
+      <div id="lpeftbot" class="lpeftbotcont" ></div>
+    </div>
+    <div class="aleftboxtbott">
+        <h2 class="tith2">气压异常事件近一年数量统计</h2>
+        <div id="aleftboxtmidd" class="aleftboxtbott_cont2" ></div>
+    </div>
+</div>
+<!--  left1 end -->
+<div class="left2">
+  <div class="pleftbox2top">
+    <h2 class="tith2">各类异常占比</h2>
+    <div id="pleftbox2top" class="pleftbox2topcont"></div>
+  </div>
+  <div class="pleftbox2midd"><h2 class="tith2">非传感器环境参数感知异常占比</h2>
+  <div id="pleftbox2midd" class="pleftbox2middcont"></div>
+  </div>
+  <div class="lpeft2bot">
+    <h2 class="tith2">震动事件近一年数量统计</h2>
+    <div class="pvr fl liwp lpeftb2otcont1" style="height:80%;" >
+      <div id="pleftbox2bott_cont"class="lpeftb2otcont"  style="height:100%;"></div>
+    </div>
+    </div>
+</div>
+</div>
+<div class="mrbox prbox">
+      <div class="mrbox_top">
+          <div class="mrbox_top_midd">
+              <div class="mrboxtm-mbox"><h2 class="tith2 pt1">监控区域状态图</h2>
+                <!-- <div class="amiddboxttop_map" style=""></div>  -->
+                  <div id="map_container"></div>
+              </div>
+<!--  map end-->
+                <div class="pmrboxbottom"><h2 class="tith2 pt1">Top10热点区域异常统计</h2>
+                    <div id="pmrboxbottom" class="pmrboxbottomcont" ></div>
+                </div>
+          </div>
+        <!-- mrbox_top_midd end -->
+        <div class="mrbox_top_right">
+          <div class="pmrtop1">
+            <h2 class="tith2">渗水事件近一年数量统计</h2>
+              <div id="lpeftmidbot2" class="lpeftmidbotcont"></div>
+          </div>
+            <!-- pmrtop  -->
+
+            <div class="pmrtop" style=" margin-top: 3.3%">
+              <h2 class="tith2">有害气体泄漏事件近一年数量统计</h2>
+                <div id="aleftboxtbott"  class="aleftboxtbott_contr"></div>
+              </div>
+              <!-- pmrtop  -->
+        </div>
+      </div>
+
+
+      <div class="mrbox_bottom">
+          <div class="rbottom_box1"><h2 class="tith2">坍塌事件近一年数量统计</h2>
+          <div id="prbottom_box1" class="prbottom_box1cont"></div></div>
+          <div class="rbottom_box2"><h2 class="tith2">位移事件近一年数量统计</h2>
+          <div id="prbottom_box2" class="prbottom_box1cont" ></div></div>
+          <div class="rbottom_box3"><h2 class="tith2 pt2">异物入侵事件近一年数量统计</h2>
+          <div id="prbottom_box3" class="prbottom_box1cont"></div></div>
+
+      </div>
+</div>
+<script type="text/javascript">
+    var now = new Date();
+    //当前日期赋值给当前日期输入框中（jQuery easyUI）
+    var Ago = []
+    for (var i = 0; i < 12; i++){
+        var ago = new Date(now.setMonth(now.getMonth() - 1));
+        Ago[11-i] = ago.getMonth() + 1;
+    }
+
+var myChart = echarts.init(document.getElementById('lpeftmidbot'));
+option = {
+        backgroundColor: 'rgba(1,202,217,.2)',
+        grid: {
+                  left:60,
+                  right:20,
+                  top:45,
+                  bottom:40
+                },
+
+      toolbox: {
+          feature: {
+              dataView: {show: true, readOnly: false},
+              magicType: {show: true, type: ['line', 'bar']},
+              restore: {show: true},
+              saveAsImage: {show: true}
+          }
+      },
+      legend: {
+        top:10,
+        textStyle:{
+          fontSize: 10,
+          color:'rgba(255,255,255,.7)'
+        },
+          data:['温度异常事件数量','系统最大负载']
+      },
+      xAxis: [
+          {
+              type: 'category',
+              axisLine:{
+                lineStyle:{
+                  color:'rgba(255,255,255,.2)'
+                }
+              },
+              splitLine:{
+                lineStyle:{
+                  color:'rgba(255,255,255,.1)'
+                }
+              },
+              axisLabel:{
+                  color:"rgba(255,255,255,.7)"
+              },
+
+              data: Ago,
+              axisPointer: {
+                  type: 'shadow'
+              }
+          }
+      ],
+      yAxis: [
+          {
+              type: 'value',
+              name: '',
+              min: 0,
+              max: 250,
+              interval: 50,
+              axisLine:{
+                lineStyle:{
+                  color:'rgba(255,255,255,.3)'
+                }
+              },
+              splitLine:{
+                lineStyle:{
+                  color:'rgba(255,255,255,.01)'
+                }
+              },
+
+              axisLabel: {
+                  formatter: '{value}'
+              }
+          }
+      ],
+      series: [
+          {
+              name:'温度异常事件数量',
+              type:'bar',
+              itemStyle: {
+                              normal: {
+                                  color: new echarts.graphic.LinearGradient(
+                                      0, 0, 0, 1,
+                                      [
+                                          {offset: 0, color: '#b266ff'},
+                                          {offset: 1, color: '#121b87'}
+                                      ]
+                                  )
+                              }
+                          },
+              data:[98,117,126,109,94,127,113,130,105,101,94,113]
+          },
+          {
+              name:'系统最大负载',
+              type:'line',
+              itemStyle: {
+                  normal: {
+                      color: new echarts.graphic.LinearGradient(
+                          0, 0, 0, 1,
+                          [
+                              {offset: 0, color: '#fffb34'},
+                              {offset: 1, color: '#fffb34'}
+                          ]
+                      )
+                  }
+              },
+              data:[150, 151, 150, 153, 149, 162, 158, 152, 156, 149, 148, 153]
+          }
+      ]
+  };
+        myChart.setOption(option);
+    </script>
+
+    <script type="text/javascript">
+        var now = new Date();
+        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+        var Ago = []
+        for (var i = 0; i < 12; i++){
+            var ago = new Date(now.setMonth(now.getMonth() - 1));
+            Ago[11-i] = ago.getMonth() + 1;
+        }
+            var myChart = echarts.init(document.getElementById('lpeftbot'));
+            option = {
+                backgroundColor: 'rgba(1,202,217,.2)',
+                grid: {
+                    left:60,
+                    right:20,
+                    top:50,
+                    bottom:40
+                },
+
+                toolbox: {
+                    feature: {
+                        dataView: {show: true, readOnly: false},
+                        magicType: {show: true, type: ['line', 'bar']},
+                        restore: {show: true},
+                        saveAsImage: {show: true}
+                    }
+                },
+                legend: {
+                    top:10,
+                    textStyle:{
+                        fontSize: 10,
+                        color:'rgba(255,255,255,.7)'
+                    },
+                    data:['湿度异常事件数量','系统最大负载']
+                },
+                xAxis: [
+                    {
+                        type: 'category',
+                        axisLine:{
+                            lineStyle:{
+                                color:'rgba(255,255,255,.2)'
+                            }
+                        },
+                        splitLine:{
+                            lineStyle:{
+                                color:'rgba(255,255,255,.1)'
+                            }
+                        },
+                        axisLabel:{
+                            color:"rgba(255,255,255,.7)"
+                        },
+
+                        data: Ago,
+                        axisPointer: {
+                            type: 'shadow'
+                        }
+                    }
+                ],
+                yAxis: [
+                    {
+                        type: 'value',
+                        name: '',
+                        min: 0,
+                        max: 250,
+                        interval: 50,
+                        axisLine:{
+                            lineStyle:{
+                                color:'rgba(255,255,255,.3)'
+                            }
+                        },
+                        splitLine:{
+                            lineStyle:{
+                                color:'rgba(255,255,255,.01)'
+                            }
+                        },
+
+                        axisLabel: {
+                            //formatter: '{value} %'
+                            formatter: '{value}'
+                        }
+                    }
+                ],
+                series: [
+                    {
+                        name:'湿度异常事件数量',
+                        type:'bar',
+                        itemStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: '#00f0ff'},
+                                        {offset: 1, color: '#032a72'}
+                                    ]
+                                )
+                            }
+                        },
+                        data:[106,119,116,123,157,134,109,118,142,156,134,187]
+                    },
+                    {
+                        name:'系统最大负载',
+                        type:'line',
+                        itemStyle: {
+                            normal: {
+                                color: new echarts.graphic.LinearGradient(
+                                    0, 0, 0, 1,
+                                    [
+                                        {offset: 0, color: '#fffb34'},
+                                        {offset: 1, color: '#fffb34'}
+                                    ]
+                                )
+                            }
+                        },
+                        data:[195, 201, 204, 193, 211, 202, 200, 196, 207, 201, 206, 199]
+                    }
+                ]
+            };
+            myChart.setOption(option);
+        </script>
+
+<script type="text/javascript">
+    var now = new Date();
+    //当前日期赋值给当前日期输入框中（jQuery easyUI）
+    var Ago = []
+    for (var i = 0; i < 12; i++){
+        var ago = new Date(now.setMonth(now.getMonth() - 1));
+        Ago[11-i] = ago.getMonth() + 1;
+    }
+    var myChart = echarts.init(document.getElementById('aleftboxtmidd'));
+    option = {
+        backgroundColor: 'rgba(1,202,217,.2)',
+        grid: {
+            left:60,
+            right:20,
+            top:50,
+            bottom:40
+        },
+
+        toolbox: {
+            feature: {
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+        legend: {
+            top:10,
+            textStyle:{
+                fontSize: 10,
+                color:'rgba(255,255,255,.7)'
+            },
+            data:['压力异常事件数量','系统最大负载']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel:{
+                    color:"rgba(255,255,255,.7)"
+                },
+
+                data: Ago,
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '',
+                min: 0,
+                max: 250,
+                interval: 50,
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.3)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.01)'
+                    }
+                },
+
+                axisLabel: {
+                    //formatter: '{value} %'
+                    formatter: '{value}'
+                }
+            }
+        ],
+        series: [
+            {
+                name:'压力异常事件数量',
+                type:'bar',
+                itemStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: '#7ABB4B'},
+                                {offset: 1, color: '#02356A'}
+                            ]
+                        )
+                    }
+                },
+                data:[16,24,68,123,136,123,119,156,114,106,100,92]
+            },
+            {
+                name:'系统最大负载',
+                type:'line',
+                itemStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: '#fffb34'},
+                                {offset: 1, color: '#fffb34'}
+                            ]
+                        )
+                    }
+                },
+                data:[162,198,132,157,166,179,183,159,149,156,167,158]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+        <script type="text/javascript">
+                var myChart = echarts.init(document.getElementById('pleftbox2top'));
+                option = {
+                  color:['#E2DAC7','#F99851', '#FCEF03', '#47B971', '#EE1F93','#8E78C0',  '#03ADE8', '#F4808D','#000000'],
+                    backgroundColor: 'rgba(1,202,217,.2)',
+                    grid: {
+                              left:20,
+                              right:20,
+                              top:0,
+                              bottom:20
+                            },
+                            legend: {
+                              top:10,
+                              textStyle:{
+                                fontSize: 10,
+                                color:'rgba(255,255,255,.7)'
+                              },
+                                data:['温度','湿度','坍塌','震动','异物入侵','位移','气压','有害气体泄漏']
+                            },
+                            series : [
+                     {
+                         name: '异常类型',
+                         type: 'pie',
+                         radius : '55%',
+                         center: ['50%', '55%'],
+                         data:[
+                           {value:1862, name:'温度'},
+                           {value:585, name:'湿度'},
+                           {value:534, name:'坍塌'},
+                           {value:1622, name:'震动'},
+                           {value:1780, name:'异物入侵'},
+                           {value:980, name:'位移'},
+                           {value:797, name:'气压'},
+                           {value:1728, name:'有害气体泄漏'}
+                         ],
+                         itemStyle: {
+                             emphasis: {
+                                 shadowBlur: 10,
+                                 shadowOffsetX: 0,
+                                 shadowColor: 'rgba(0, 0, 0, 0.5)'
+                             }
+                         }
+                     }
+                 ]
+                };
+                myChart.setOption(option);
+            </script>
+            <script type="text/javascript">
+                    var myChart = echarts.init(document.getElementById('pleftbox2midd'));
+                    option = {
+                        color:['#E2DAC7','#F99851', '#FCEF03', '#47B971', '#EE1F93','#8E78C0',  '#03ADE8', '#F4808D','#000000'],
+                        backgroundColor: 'rgba(1,202,217,.2)',
+                        grid: {
+                                  left:20,
+                                  right:20,
+                                  top:0,
+                                  bottom:20
+                                },
+                                legend: {
+                                  top:10,
+                                  textStyle:{
+                                    fontSize: 10,
+                                    color:'rgba(255,255,255,.7)'
+                                  },
+                                    data:['坍塌','震动','位移','异物入侵']
+                                },
+                                series : [
+                         {
+                             name: '异常占比',
+                             type: 'pie',
+                             radius : '55%',
+                             center: ['50%', '65%'],
+                             data:[
+                                 {value:534, name:'坍塌'},
+                               {value:1622, name:'震动'},
+                               {value:980, name:'位移'},
+                               {value:1780, name:'异物入侵'}
+
+                             ],
+                             itemStyle: {
+                                 emphasis: {
+                                     shadowBlur: 10,
+                                     shadowOffsetX: 0,
+                                     shadowColor: 'rgba(0, 0, 0, 0.5)'
+                                 }
+                             }
+                         }
+                     ]
+                    };
+                    myChart.setOption(option);
+                </script>
+                <script type="text/javascript">
+                        var myChart = echarts.init(document.getElementById('pmrboxbottom'));
+                        option = {
+                            color:['#E2DAC7','#F99851', '#FCEF03', '#47B971', '#EE1F93','#8E78C0',  '#03ADE8', '#F4808D','#000000'],
+                            backgroundColor: 'rgba(1,202,217,.2)',
+                            legend: {
+                              top:10,
+                              textStyle:{
+                                fontSize: 10,
+                                color:'rgba(255,255,255,.7)'
+                              },
+                                data:['温度','湿度','坍塌','震动','异物入侵','位移','气压','有害气体泄漏']
+                              },
+                              grid: {
+                                  left: 10,
+                                  right: 10,
+                                  top: 40,
+                                  bottom: 10,
+                                  containLabel: true
+                              },
+
+                              xAxis : [
+                                     {
+                                         type : 'category',
+                                         axisLine:{
+                                           lineStyle:{
+                                             color:'rgba(255,255,255,.3)'
+                                           }
+                                         },
+                                         splitLine:{
+                                           lineStyle:{
+                                             color:'rgba(255,255,255,.01)'
+                                           }
+                                         },
+                                         data : ['热点1','热点2','热点3','热点4','热点5','热点6','热点7','热点8','热点9','热点10']
+                                     }
+                                 ],
+                              yAxis : [
+                                  {
+                                    axisLine:{
+                                      lineStyle:{
+                                        color:'rgba(255,255,255,.3)'
+                                      }
+                                    },
+                                    splitLine:{
+                                      lineStyle:{
+                                        color:'rgba(255,255,255,.01)'
+                                      }
+                                    },
+
+                                    axisLabel: {
+                                        formatter: '{value}'
+                                    },
+                                      type : 'value'
+                                  }
+
+                              ],
+                              series : [
+
+                                  {
+                                      name:'温度',
+                                      type:'bar',
+                                      barWidth :30,
+                                      stack: '异常',
+                                      data:[126, 34, 61, 184, 182, 135, 136, 20, 186, 160]
+                                  },
+                                  {
+                                      name:'湿度',
+                                      type:'bar',
+                                      stack: '异常',
+                                      data:[68, 73, 12, 11, 53, 96, 105, 31, 14, 118]
+                                  },
+                                  {
+                                      name:'坍塌',
+                                      type:'bar',
+                                      stack: '异常',
+                                      data:[107, 76, 65, 117, 174, 45, 130, 165, 110, 197]
+                                  },
+                                  ,
+                                  {
+                                      name:'震动',
+                                      type:'bar',
+                                      stack: '异常',
+                                      data:[64, 17, 61, 124, 94, 134, 48, 54, 81, 33]
+                                  },
+                                  {
+                                      name:'异物入侵',
+                                      type:'bar',
+                                      stack: '异常',
+                                      data:[37, 174, 125, 140, 127, 97, 86, 63, 197, 26]
+                                  },
+                                  {
+                                      name:'气压',
+                                      type:'bar',
+                                      stack: '异常',
+                                      data:[120, 67, 143, 40, 144, 150, 190, 93, 107, 160]
+                                  },
+                                  {
+                                      name:'有害气体泄漏',
+                                      type:'bar',
+                                      stack: '异常',
+                                      data:[175, 54, 161, 189, 106, 179, 167, 130, 95, 20]
+                                  },
+                              ]
+                              };
+                        myChart.setOption(option);
+                    </script>
+                    <script type="text/javascript">
+                        var now = new Date();
+                        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+                        var Ago = []
+                        for (var i = 0; i < 12; i++){
+                            var ago = new Date(now.setMonth(now.getMonth() - 1));
+                            Ago[11-i] = ago.getMonth() + 1;
+                        }
+                            var myChart = echarts.init(document.getElementById('pleftbox2bott_cont'));
+                            option = {
+                                backgroundColor: 'rgba(1,202,217,.2)',
+                                grid: {
+                                    left:60,
+                                    right:20,
+                                    top:50,
+                                    bottom:40
+                                },
+
+                                toolbox: {
+                                    feature: {
+                                        dataView: {show: true, readOnly: false},
+                                        magicType: {show: true, type: ['line', 'bar']},
+                                        restore: {show: true},
+                                        saveAsImage: {show: true}
+                                    }
+                                },
+                                legend: {
+                                    top:10,
+                                    textStyle:{
+                                        fontSize: 10,
+                                        color:'rgba(255,255,255,.7)'
+                                    },
+                                    data:['震动事件数量','系统最大负载']
+                                },
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'rgba(255,255,255,.2)'
+                                            }
+                                        },
+                                        splitLine:{
+                                            lineStyle:{
+                                                color:'rgba(255,255,255,.1)'
+                                            }
+                                        },
+                                        axisLabel:{
+                                            color:"rgba(255,255,255,.7)"
+                                        },
+
+                                        data: Ago,
+                                        axisPointer: {
+                                            type: 'shadow'
+                                        }
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        name: '',
+                                        min: 0,
+                                        max: 250,
+                                        interval: 50,
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'rgba(255,255,255,.3)'
+                                            }
+                                        },
+                                        splitLine:{
+                                            lineStyle:{
+                                                color:'rgba(255,255,255,.01)'
+                                            }
+                                        },
+
+                                        axisLabel: {
+                                            //formatter: '{value} %'
+                                            formatter: '{value}'
+                                        }
+                                    }
+                                ],
+                                series: [
+                                    {
+                                        name:'震动事件数量',
+                                        type:'bar',
+                                        itemStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(
+                                                    0, 0, 0, 1,
+                                                    [
+                                                        {offset: 0, color: '#FD751F'},
+                                                        {offset: 1, color: '#02356A'}
+                                                    ]
+                                                )
+                                            }
+                                        },
+                                        data:[91, 114, 162, 175, 135, 95, 146, 147, 72, 155, 111, 110]
+                                    },
+                                    {
+                                        name:'系统最大负载',
+                                        type:'line',
+                                        itemStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(
+                                                    0, 0, 0, 1,
+                                                    [
+                                                        {offset: 0, color: '#fffb34'},
+                                                        {offset: 1, color: '#fffb34'}
+                                                    ]
+                                                )
+                                            }
+                                        },
+                                        data:[184, 200, 165, 249, 228, 213, 212, 233, 189, 195, 157, 210]
+                                    }
+                                ]
+                            };
+                            myChart.setOption(option);
+                        </script>
+                        <script type="text/javascript">
+                            var now = new Date();
+                            //当前日期赋值给当前日期输入框中（jQuery easyUI）
+                            var Ago = []
+                            for (var i = 0; i < 12; i++){
+                                var ago = new Date(now.setMonth(now.getMonth() - 1));
+                                Ago[11-i] = ago.getMonth() + 1;
+                            }
+                                var myChart = echarts.init(document.getElementById('prbottom_box1'));
+                                option = {
+                                    backgroundColor: 'rgba(1,202,217,.2)',
+                                    grid: {
+                                        left:60,
+                                        right:20,
+                                        top:50,
+                                        bottom:40
+                                    },
+
+                                    toolbox: {
+                                        feature: {
+                                            dataView: {show: true, readOnly: false},
+                                            magicType: {show: true, type: ['line', 'bar']},
+                                            restore: {show: true},
+                                            saveAsImage: {show: true}
+                                        }
+                                    },
+                                    legend: {
+                                        top:10,
+                                        textStyle:{
+                                            fontSize: 10,
+                                            color:'rgba(255,255,255,.7)'
+                                        },
+                                        data:['坍塌事件数量','系统最大负载']
+                                    },
+                                    xAxis: [
+                                        {
+                                            type: 'category',
+                                            axisLine:{
+                                                lineStyle:{
+                                                    color:'rgba(255,255,255,.2)'
+                                                }
+                                            },
+                                            splitLine:{
+                                                lineStyle:{
+                                                    color:'rgba(255,255,255,.1)'
+                                                }
+                                            },
+                                            axisLabel:{
+                                                color:"rgba(255,255,255,.7)"
+                                            },
+
+                                            data: Ago,
+                                            axisPointer: {
+                                                type: 'shadow'
+                                            }
+                                        }
+                                    ],
+                                    yAxis: [
+                                        {
+                                            type: 'value',
+                                            name: '',
+                                            min: 0,
+                                            max: 250,
+                                            interval: 50,
+                                            axisLine:{
+                                                lineStyle:{
+                                                    color:'rgba(255,255,255,.3)'
+                                                }
+                                            },
+                                            splitLine:{
+                                                lineStyle:{
+                                                    color:'rgba(255,255,255,.01)'
+                                                }
+                                            },
+
+                                            axisLabel: {
+                                                //formatter: '{value} %'
+                                                formatter: '{value}'
+                                            }
+                                        }
+                                    ],
+                                    series: [
+                                        {
+                                            name:'坍塌事件数量',
+                                            type:'bar',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: new echarts.graphic.LinearGradient(
+                                                        0, 0, 0, 1,
+                                                        [
+                                                            {offset: 0, color: '#6CAC4F'},
+                                                            {offset: 1, color: '#02366B'}
+                                                        ]
+                                                    )
+                                                }
+                                            },
+                                            data:[97,112,136,107,81,89,103,79,73,92,108,116]
+                                        },
+                                        {
+                                            name:'系统最大负载',
+                                            type:'line',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: new echarts.graphic.LinearGradient(
+                                                        0, 0, 0, 1,
+                                                        [
+                                                            {offset: 0, color: '#fffb34'},
+                                                            {offset: 1, color: '#fffb34'}
+                                                        ]
+                                                    )
+                                                }
+                                            },
+                                            data:[153,169,132,146,149,158,160,134,144,152,138,150]
+                                        }
+                                    ]
+                                };
+                                myChart.setOption(option);
+                            </script>
+                    <script type="text/javascript">
+                        var now = new Date();
+                        //当前日期赋值给当前日期输入框中（jQuery easyUI）
+                        var Ago = []
+                        for (var i = 0; i < 12; i++){
+                            var ago = new Date(now.setMonth(now.getMonth() - 1));
+                            Ago[11-i] = ago.getMonth() + 1;
+                        }
+                            var myChart = echarts.init(document.getElementById('prbottom_box2'));
+                            option = {
+                                backgroundColor: 'rgba(1,202,217,.2)',
+                                grid: {
+                                    left:60,
+                                    right:20,
+                                    top:50,
+                                    bottom:40
+                                },
+
+                                toolbox: {
+                                    feature: {
+                                        dataView: {show: true, readOnly: false},
+                                        magicType: {show: true, type: ['line', 'bar']},
+                                        restore: {show: true},
+                                        saveAsImage: {show: true}
+                                    }
+                                },
+                                legend: {
+                                    top:10,
+                                    textStyle:{
+                                        fontSize: 10,
+                                        color:'rgba(255,255,255,.7)'
+                                    },
+                                    data:['位移事件数量','系统最大负载']
+                                },
+                                xAxis: [
+                                    {
+                                        type: 'category',
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'rgba(255,255,255,.2)'
+                                            }
+                                        },
+                                        splitLine:{
+                                            lineStyle:{
+                                                color:'rgba(255,255,255,.1)'
+                                            }
+                                        },
+                                        axisLabel:{
+                                            color:"rgba(255,255,255,.7)"
+                                        },
+
+                                        data: Ago,
+                                        axisPointer: {
+                                            type: 'shadow'
+                                        }
+                                    }
+                                ],
+                                yAxis: [
+                                    {
+                                        type: 'value',
+                                        name: '',
+                                        min: 0,
+                                        max: 250,
+                                        interval: 50,
+                                        axisLine:{
+                                            lineStyle:{
+                                                color:'rgba(255,255,255,.3)'
+                                            }
+                                        },
+                                        splitLine:{
+                                            lineStyle:{
+                                                color:'rgba(255,255,255,.01)'
+                                            }
+                                        },
+
+                                        axisLabel: {
+                                            //formatter: '{value} %'
+                                            formatter: '{value}'
+                                        }
+                                    }
+                                ],
+                                series: [
+                                    {
+                                        name:'位移事件数量',
+                                        type:'bar',
+                                        itemStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(
+                                                    0, 0, 0, 1,
+                                                    [
+                                                        {offset: 0, color: '#17BBDA'},
+                                                        {offset: 1, color: '#02366B'}
+                                                    ]
+                                                )
+                                            }
+                                        },
+                                        data:[106, 174, 139, 176, 163, 171, 158, 161, 182, 189, 153, 155]
+                                    },
+                                    {
+                                        name:'系统最大负载',
+                                        type:'line',
+                                        itemStyle: {
+                                            normal: {
+                                                color: new echarts.graphic.LinearGradient(
+                                                    0, 0, 0, 1,
+                                                    [
+                                                        {offset: 0, color: '#fffb34'},
+                                                        {offset: 1, color: '#fffb34'}
+                                                    ]
+                                                )
+                                            }
+                                        },
+                                        data:[241, 193, 223, 246, 247, 245, 215, 239, 198, 232, 196, 224]
+                                    }
+                                ]
+                            };
+                    myChart.setOption(option);
+                  </script>
+
+                        <script type="text/javascript">
+                            var now = new Date();
+                            //当前日期赋值给当前日期输入框中（jQuery easyUI）
+                            var Ago = []
+                            for (var i = 0; i < 12; i++){
+                                var ago = new Date(now.setMonth(now.getMonth() - 1));
+                                Ago[11-i] = ago.getMonth() + 1;
+                            }
+                                var myChart = echarts.init(document.getElementById('prbottom_box3'));
+                                option = {
+                                    backgroundColor: 'rgba(1,202,217,.2)',
+                                    grid: {
+                                        left:60,
+                                        right:20,
+                                        top:50,
+                                        bottom:40
+                                    },
+
+                                    toolbox: {
+                                        feature: {
+                                            dataView: {show: true, readOnly: false},
+                                            magicType: {show: true, type: ['line', 'bar']},
+                                            restore: {show: true},
+                                            saveAsImage: {show: true}
+                                        }
+                                    },
+                                    legend: {
+                                        top:10,
+                                        textStyle:{
+                                            fontSize: 10,
+                                            color:'rgba(255,255,255,.7)'
+                                        },
+                                        data:['异物入侵事件数量','系统最大负载']
+                                    },
+                                    xAxis: [
+                                        {
+                                            type: 'category',
+                                            axisLine:{
+                                                lineStyle:{
+                                                    color:'rgba(255,255,255,.2)'
+                                                }
+                                            },
+                                            splitLine:{
+                                                lineStyle:{
+                                                    color:'rgba(255,255,255,.1)'
+                                                }
+                                            },
+                                            axisLabel:{
+                                                color:"rgba(255,255,255,.7)"
+                                            },
+
+                                            data: Ago,
+                                            axisPointer: {
+                                                type: 'shadow'
+                                            }
+                                        }
+                                    ],
+                                    yAxis: [
+                                        {
+                                            type: 'value',
+                                            name: '',
+                                            min: 0,
+                                            max: 250,
+                                            interval: 50,
+                                            axisLine:{
+                                                lineStyle:{
+                                                    color:'rgba(255,255,255,.3)'
+                                                }
+                                            },
+                                            splitLine:{
+                                                lineStyle:{
+                                                    color:'rgba(255,255,255,.01)'
+                                                }
+                                            },
+
+                                            axisLabel: {
+                                                //formatter: '{value} %'
+                                                formatter: '{value}'
+                                            }
+                                        }
+                                    ],
+                                    series: [
+                                        {
+                                            name:'异物入侵事件数量',
+                                            type:'bar',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: new echarts.graphic.LinearGradient(
+                                                        0, 0, 0, 1,
+                                                        [
+                                                            {offset: 0, color: '#8C50BE'},
+                                                            {offset: 1, color: '#02376D'}
+                                                        ]
+                                                    )
+                                                }
+                                            },
+                                            data:[178, 78, 64, 129, 76, 106, 164, 92, 53, 189, 65, 99]
+                                        },
+                                        {
+                                            name:'系统最大负载',
+                                            type:'line',
+                                            itemStyle: {
+                                                normal: {
+                                                    color: new echarts.graphic.LinearGradient(
+                                                        0, 0, 0, 1,
+                                                        [
+                                                            {offset: 0, color: '#fffb34'},
+                                                            {offset: 1, color: '#fffb34'}
+                                                        ]
+                                                    )
+                                                }
+                                            },
+                                            data:[230, 151, 249, 197, 189, 195, 159, 218, 181, 211, 226, 188]
+                                        }
+                                    ]
+                                };
+                                myChart.setOption(option);
+                            </script>
+                            <script type="text/javascript">
+                                    var myChart = echarts.init(document.getElementById('pmrmidd'));
+                                    option = {
+                                      color:['#f1ff00','#00c1ff', '#61a0a8', '#d48265', '#91c7ae','#749f83',  '#ca8622', '#bda29a','#6e7074', '#546570', '#c4ccd3'],
+                                        // backgroundColor: 'rgba(1,202,217,.2)',
+                                        grid: {
+                            											left:20,
+                            											right:20,
+                            											top:30,
+                            											bottom:30
+                            										},
+                                       radar: {
+                                           name: {
+                                                  textStyle: {
+                                                      fontSize: 10,
+                                                      color: 'rgba(255,255,255,.8)'
+                                                  }
+                                              },
+                                              splitLine: {
+                                                  lineStyle: {
+                                                      color: [
+                                                          'rgba(1,202,217,.01)', 'rgba(1,202,217,.01)'
+                                                      ].reverse()
+                                                  }
+                                              },
+                                              splitArea: {
+                                                  show: false
+                                              },
+                                              axisLine: {
+                                                  lineStyle: {
+                                                      color: 'rgba(1,202,217,.7)'
+                                                  }
+                                              },
+                                           indicator: [
+                                              { name: '红色', max: 6500},
+                                              { name: '橙色', max: 16000},
+                                              { name: '黄色', max: 30000},
+                                              { name: '绿色', max: 44000}
+                                           ]
+                                       },
+                                       series: [{
+                                           name: '',
+                                           type: 'radar',
+                                           radius : [5, 100],
+                                           center: ['50%', '50%'],
+                                           data : [
+                                               {
+                                                   value : [4300, 10000, 28000, 19000],
+                                                   name : ''
+                                               },
+                                                {
+                                                   value : [5000, 14000,  22000, 41000],
+                                                   name : ''
+                                               }
+                                           ]
+                                       }]
+                                    };
+                                    myChart.setOption(option);
+                                </script>
+
+<script type="text/javascript">
+    var now = new Date();
+    //当前日期赋值给当前日期输入框中（jQuery easyUI）
+    var Ago = []
+    for (var i = 0; i < 12; i++){
+        var ago = new Date(now.setMonth(now.getMonth() - 1));
+        Ago[11-i] = ago.getMonth() + 1;
+    }
+    var myChart = echarts.init(document.getElementById('lpeftmidbot2'));
+    option = {
+        backgroundColor: 'rgba(1,202,217,.2)',
+        grid: {
+            left:60,
+            right:20,
+            top:45,
+            bottom:40
+        },
+
+        toolbox: {
+            feature: {
+                dataView: {show: true, readOnly: false},
+                magicType: {show: true, type: ['line', 'bar']},
+                restore: {show: true},
+                saveAsImage: {show: true}
+            }
+        },
+        legend: {
+            top:10,
+            textStyle:{
+                fontSize: 10,
+                color:'rgba(255,255,255,.7)'
+            },
+            data:['渗水事件数量','系统最大负载']
+        },
+        xAxis: [
+            {
+                type: 'category',
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.2)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.1)'
+                    }
+                },
+                axisLabel:{
+                    color:"rgba(255,255,255,.7)"
+                },
+
+                data: Ago,
+                axisPointer: {
+                    type: 'shadow'
+                }
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value',
+                name: '',
+                min: 0,
+                max: 250,
+                interval: 50,
+                axisLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.3)'
+                    }
+                },
+                splitLine:{
+                    lineStyle:{
+                        color:'rgba(255,255,255,.01)'
+                    }
+                },
+
+                axisLabel: {
+                    formatter: '{value}'
+                }
+            }
+        ],
+        series: [
+            {
+                name:'渗水事件数量',
+                type:'bar',
+                itemStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: '#F3808F'},
+                                {offset: 1, color: '#121b87'}
+                            ]
+                        )
+                    }
+                },
+                data:[109, 167, 142, 149, 165, 120, 135, 77, 177, 54, 94, 75]
+            },
+            {
+                name:'系统最大负载',
+                type:'line',
+                itemStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(
+                            0, 0, 0, 1,
+                            [
+                                {offset: 0, color: '#fffb34'},
+                                {offset: 1, color: '#fffb34'}
+                            ]
+                        )
+                    }
+                },
+                data:[202, 223, 208, 230, 207, 205, 241, 219, 237, 213, 245, 215]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    var myChart = echarts.init(document.getElementById('aleftboxtbott'));
+    option = {
+        color:['#7ecef4'],
+        backgroundColor: 'rgba(1,202,217,.2)',
+        grid: {
+            left:20,
+            right:50,
+            top:23,
+            bottom:30,
+            containLabel: true
+        },
+
+        xAxis: {
+            type: 'value',
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.2)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,0)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,1)"
+            },
+            data: ['20','40','60','80','100','120'],
+            boundaryGap: [0, 0.01]
+        },
+        yAxis: {
+            type: 'category',
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.5)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.1)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,.5)"
+            },
+            data: ['可燃气体','硫化气体','一氧化碳','甲烷','PM2.5']
+        },
+        series: [
+            {
+                name: '有害气体',
+                type: 'bar',
+                barWidth :30,
+                itemStyle: {
+                    normal: {
+                        color: new echarts.graphic.LinearGradient(
+                            1, 0, 0, 1,
+                            [
+                                {offset: 0, color: 'rgba(230,253,139,.7)'},
+                                {offset: 1, color: 'rgba(41,220,205,.7)'}
+                            ]
+                        )
+                    }
+                },
+                data: [81, 62, 90, 34, 18]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<script type="text/javascript">
+    var now = new Date();
+    //当前日期赋值给当前日期输入框中（jQuery easyUI）
+    var Ago = []
+    for (var i = 0; i < 60; i++){
+        var ago = new Date(now.setMinutes(now.getMinutes() - 1));
+        Ago[60-i-1] = ago.getMinutes();
+    }
+
+    var myChart = echarts.init(document.getElementById('CPURAMROM'));
+    option = {
+        color:['#00ffff','#7fd7b1', '#5578cf', '#5ebbeb', '#d16ad8','#f8e19a',  '#00b7ee', '#81dabe','#5fc5ce'],
+        backgroundColor: 'rgba(1,202,217,.2)',
+
+        grid: {
+            left: '5%',
+            right: '8%',
+            bottom: '7%',
+            top:'8%',
+            containLabel: true
+        },
+        toolbox: {
+            feature: {
+                saveAsImage: {}
+            }
+        },
+        xAxis: {
+            type: 'category',
+            boundaryGap: false,
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.2)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.1)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,.7)"
+            },
+            data: Ago
+        },
+        yAxis: {
+            type: 'value',
+            axisLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.2)'
+                }
+            },
+            splitLine:{
+                lineStyle:{
+                    color:'rgba(255,255,255,.1)'
+                }
+            },
+            axisLabel:{
+                color:"rgba(255,255,255,.7)",
+                formatter: '{value} %'
+            },
+        },
+        series: [
+            {
+                name:'CPU',
+                type:'line',
+                stack: '总量',
+                //areaStyle: {normal: {}},
+                data:[56, 35, 80, 66, 34, 30, 77, 67, 48, 12, 47, 57, 65, 14, 83, 85, 24, 58, 59, 78, 32, 25, 33, 18, 72, 51, 64, 39, 79, 87, 44, 10, 40, 55, 88, 16, 45, 19, 13, 74, 36, 54, 50, 26, 20, 68, 29, 21, 75, 46, 15, 22, 89, 76, 60, 61, 70, 49, 81, 27]
+            },
+            {
+                name:'RAM',
+                type:'line',
+                stack: '总量',
+                //areaStyle: {normal: {}},
+                data:[79, 49, 78, 51, 29, 70, 75, 67, 30, 57, 44, 42, 89, 82, 34, 31, 69, 36, 63, 53, 59, 60, 80, 11, 62, 76, 45, 40, 52, 56, 28, 20, 74, 10, 32, 26, 47, 85, 43, 86, 14, 27, 39, 19, 68, 50, 61, 81, 64, 16, 12, 38, 25, 35, 23, 21, 18, 71, 73, 17]
+            },
+            {
+                name:'ROM',
+                type:'line',
+                stack: '总量',
+                //areaStyle: {normal: {}},
+                data:[65, 75, 87, 54, 33, 30, 27, 40, 34, 68, 58, 15, 42, 82, 19, 35, 59, 52, 28, 61, 12, 22, 18, 88, 21, 62, 31, 63, 66, 85, 10, 16, 74, 23, 64, 70, 55, 49, 71, 17, 67, 13, 69, 26, 43, 72, 86, 56, 32, 80, 48, 29, 89, 39, 11, 81, 24, 44, 77, 37]
+            }
+        ]
+    };
+    myChart.setOption(option);
+</script>
+
+<!--<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=955f6bf0f9e1ef5b11744381dbc5767d"></script>-->
+<!--<script type="text/javascript">-->
+<!--    var map = new AMap.Map('container', {-->
+<!--        zoom:11,//级别-->
+<!--        center: [108.946961,34.261445],//中心点坐标-->
+<!--        viewMode:'3D',//使用3D视图-->
+<!--        //mapStyle:'amap://styles/darkblue',-->
+<!--    });-->
+<!--</script>-->
+
+<!--<script type="text/javascript">-->
+<!--    var map = new BMapGL.Map("container");-->
+<!--    // 创建地图实例-->
+<!--    var point = new BMapGL.Point(116.404, 39.915);-->
+<!--    // 创建点坐标-->
+<!--    map.centerAndZoom(point, 15);-->
+<!--    // 初始化地图，设置中心点坐标和地图级别-->
+<!--</script>-->
+
+<!--<script type="text/javascript">-->
+<!--    // 1. 创建地图实例-->
+<!--    var bmapgl = new BMapGL.Map('map_container');-->
+<!--    var point = new BMapGL.Point(116.403748, 39.915055);-->
+<!--    bmapgl.centerAndZoom(point, 17);-->
+
+<!--    // 2. 创建MapVGL图层管理器-->
+<!--    var view = new mapvgl.View({-->
+<!--        map: bmapgl-->
+<!--    });-->
+
+<!--    // 3. 创建可视化图层，并添加到图层管理器中-->
+<!--    var layer = new mapvgl.PointLayer({-->
+<!--        color: 'rgba(50, 50, 200, 1)',-->
+<!--        blend: 'lighter',-->
+<!--        size: 2-->
+<!--    });-->
+<!--    view.addLayer(layer);-->
+
+<!--    // 4. 准备好规范化坐标数据-->
+<!--    var data = [{-->
+<!--        geometry: {-->
+<!--            type: 'POINT',-->
+<!--            coordinates: [116.403748, 39.915055]-->
+<!--        }-->
+<!--    }];-->
+
+<!--    // 5. 关联图层与数据，享受震撼的可视化效果-->
+<!--    layer.setData(data);-->
+<!--</script>-->
+
+</body>
+</html>
